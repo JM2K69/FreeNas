@@ -8,7 +8,7 @@
         # Description d’aide Freenas
         [Parameter(Mandatory = $true)]
 
-        [Alias("Freenas")] 
+        [Alias("FreenasSrv")] 
         $Server,
 
         # Description d’aide User
@@ -37,24 +37,30 @@
     Process
     {
 
-        try { $result = Invoke-RestMethod -Uri $Uri -Headers $Headers -Method Get -SessionVariable Freenas_S}
+        try 
+        { $result = Invoke-RestMethod -Uri $Uri -Headers $Headers -Method Get -SessionVariable Freenas_S
+          $script:Session = $Freenas_S
+        }
         catch {}
 
         try
         {
             $Uri = "http://$script:SrvFreenas/api/v1.0/storage/disk/"
-
-            $result2 = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get 
+            $testconnected = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get 
         }
 
         catch {}
 
-        $script:Session = $Freenas_S
+       
 
     }
     End
     {
-        if ($result -ne $null)
+        if ($null -eq $testconnected)
+        {
+            Write-Warning "Your are not connect please verify your credentials or your Server Ipv4 or FQDN"
+        }
+        else 
         {
             Write-Host "Your are already connect to $script:SrvFreenas "-ForegroundColor Cyan
         }
