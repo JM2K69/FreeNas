@@ -19,7 +19,7 @@
 
     Begin
     {
-        if (  $global:SrvFreenas -eq $null -or $global:Session -eq $null)
+        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
         {
             Write-Host "Your aren't connected "-ForegroundColor Red
 
@@ -28,7 +28,7 @@
     }
     Process
     {
-        $Uri = "http://$global:SrvFreenas/api/v1.0/services/iscsi/authorizedinitiator/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/authorizedinitiator/"
 
 
 
@@ -37,7 +37,7 @@
             iscsi_target_initiator_auth_network = $AuthNetwork
         }
     
-        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $global:Session -ContentType "application/json"
+        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
 
     }

@@ -6,7 +6,7 @@
 
     Begin
     {
-        if (  $global:SrvFreenas -eq $null -or $global:Session -eq $null)
+        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
         {
             Write-Host "Your aren't connected "-ForegroundColor Red
         }
@@ -26,7 +26,7 @@
         New-banner -Text "Iscsi Summary" -Online 
 
         Write-Host "Your Freenas Server" -NoNewline
-        Write-Host " $global:SrvFreenas" -NoNewline -ForegroundColor Cyan
+        Write-Host " $script:SrvFreenas" -NoNewline -ForegroundColor Cyan
         Write-Host " Iscsi Configuration : " 
         $Conf_Iscsi
 

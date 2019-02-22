@@ -31,7 +31,7 @@
     Begin
     {
 
-        if (  $global:SrvFreenas -eq $null -or $global:Session -eq $null)
+        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
         {
             Write-Host "Your aren't connected "-ForegroundColor Red
 
@@ -45,7 +45,7 @@
        
         $StartDisksNB..$($StartDisksNB + $NbDisks - 1) | Foreach-Object { $freenasvolume += "$DiskNamebase$_"}       
         
-        $Uri = "http://$global:SrvFreenas/api/v1.0/storage/volume/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/"
 
 
         $Obj = [Ordered]@{
@@ -60,7 +60,7 @@
 
         $post = $Obj |convertto-json -Depth 3
 
-        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $global:Session -ContentType "application/json"
+        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
 

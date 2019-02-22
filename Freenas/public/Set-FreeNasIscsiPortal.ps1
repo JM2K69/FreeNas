@@ -23,7 +23,7 @@
 
     Begin
     {
-        if (  $global:SrvFreenas -eq $null -or $global:Session -eq $null)
+        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
         {
             Write-Host "Your aren't connected "-ForegroundColor Red
 
@@ -32,7 +32,7 @@
     }
     Process
     {
-        $Uri = "http://$global:SrvFreenas/api/v1.0/services/iscsi/portal/$Id/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/$Id/"
         $input = @($IpPortal + ":" + $Port)
 
         $IpPortalPort = @()
@@ -45,7 +45,7 @@
 
         $post = $Obj |ConvertTo-Json
         $post
-        $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $global:Session -ContentType "application/json"
+        $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
     End

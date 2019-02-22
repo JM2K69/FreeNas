@@ -19,7 +19,7 @@
     Begin
     {
 
-        if (  $global:SrvFreenas -eq $null -or $global:Session -eq $null)
+        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
         {
             Write-Host "Your aren't connected "-ForegroundColor Red
 
@@ -28,7 +28,7 @@
 
     Process
     {
-        $Uri = "http://$global:SrvFreenas/api/v1.0/services/iscsi/targettoextent/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/targettoextent/"
 
         $Obj = [Ordered]@{
             iscsi_target = $TargetId
@@ -39,7 +39,7 @@
 
         $post = $Obj |convertto-json 
 
-        $result = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $global:Session -ContentType "application/json"
+        $result = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
 

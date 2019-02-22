@@ -21,7 +21,7 @@
 
     Begin
     {
-        if (  $global:SrvFreenas -eq $null -or $global:Session -eq $null)
+        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
         {
             Write-Host "Your aren't connected "-ForegroundColor Red
 
@@ -30,7 +30,7 @@
     }
     Process
     {
-        $Uri = "http://$global:SrvFreenas/api/v1.0/services/iscsi/target/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/target/"
 
         $Obj = new-Object -TypeName PSObject
 
@@ -47,7 +47,7 @@
         $Obj | add-member -name "iscsi_target_mode" -membertype NoteProperty -Value $TargetMode.ToLower()
 
         $post = $Obj |ConvertTo-Json
-        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $global:Session -ContentType "application/json"
+        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
     End

@@ -23,13 +23,13 @@
 
     Begin
     {
-        $global:SrvFreenas = ""
-        $global:Session = ""
+        $script:SrvFreenas = ""
+        $script:Session = ""
 
         $Uri = "http://$Server/api/v1.0"
         $Headers = @{ Authorization = "Basic {0}" -f [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $Username, $Password))) }
 
-        $global:SrvFreenas = $Server
+        $script:SrvFreenas = $Server
 
         New-banner -Text "Freenas Module v1.0" -Online 
 
@@ -42,21 +42,21 @@
 
         try
         {
-            $Uri = "http://$global:SrvFreenas/api/v1.0/storage/disk/"
+            $Uri = "http://$script:SrvFreenas/api/v1.0/storage/disk/"
 
-            $result2 = Invoke-RestMethod -Uri $Uri -WebSession $global:Session -Method Get 
+            $result2 = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get 
         }
 
         catch {}
 
-        $global:Session = $Freenas_S
+        $script:Session = $Freenas_S
 
     }
     End
     {
         if ($result -ne $null)
         {
-            Write-Host "Your are already connect to $global:SrvFreenas "-ForegroundColor Cyan
+            Write-Host "Your are already connect to $script:SrvFreenas "-ForegroundColor Cyan
         }
     }
 }

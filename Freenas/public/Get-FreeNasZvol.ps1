@@ -13,7 +13,7 @@
 
     Begin
     {
-        if (  $global:SrvFreenas -eq $null -or $global:Session -eq $null)
+        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
         {
             Write-Host "Your aren't connected "-ForegroundColor Red
 
@@ -22,9 +22,9 @@
     }
     Process
     {
-        $Uri = "http://$global:SrvFreenas/api/v1.0/storage/volume/$VolumeName/zvols/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/$VolumeName/zvols/"
 
-        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $global:Session -Method Get }
+        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
        
         Catch {}
 
