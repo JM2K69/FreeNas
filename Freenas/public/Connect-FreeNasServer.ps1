@@ -38,8 +38,9 @@
     {
 
         try 
-        { $result = Invoke-RestMethod -Uri $Uri -Headers $Headers -Method Get -SessionVariable Freenas_S
-          $script:Session = $Freenas_S
+        {
+            $result = Invoke-RestMethod -Uri $Uri -Headers $Headers -Method Get -SessionVariable Freenas_S
+            $script:Session = $Freenas_S
         }
         catch {}
 

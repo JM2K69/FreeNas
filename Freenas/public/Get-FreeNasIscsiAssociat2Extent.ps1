@@ -14,18 +14,19 @@
 
     Begin
     {
-        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
+        Get-FreeNasStatus
+        switch ( $Script:status)
         {
-            Write-Host "Your aren't connected "-ForegroundColor Red
-
+            $true {  }
+            $false {Break}
         }
 
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/targettoextent/"
+        $Uri = "http://$Script:SrvFreenas/api/v1.0/services/iscsi/targettoextent/"
 
-        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
+        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get }
 
         Catch {}
 

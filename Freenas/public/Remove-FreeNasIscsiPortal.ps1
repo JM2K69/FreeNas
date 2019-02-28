@@ -16,13 +16,15 @@
 
     Begin
     {
-        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
+        Get-FreeNasStatus
+        switch ( $Script:status)
         {
-            Write-Host "Your aren't connected "-ForegroundColor Red
-
+            $true {  $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/$Id/"  }
+            $false {Break}
         }
 
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/$Id/"
+
+      
 
     }
     Process

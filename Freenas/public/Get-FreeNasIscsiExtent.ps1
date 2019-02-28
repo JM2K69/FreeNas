@@ -7,10 +7,11 @@
 
     Begin
     {
-        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
+        Get-FreeNasStatus
+        switch ( $Script:status)
         {
-            Write-Host "Your aren't connected "-ForegroundColor Red
-
+            $true {  }
+            $false {Break}
         }
 
     }
@@ -23,27 +24,30 @@
 
         $Extent = New-Object System.Collections.ArrayList
 
-
+        
         for ($i = 0; $i -lt $result.Count; $i++)
         {
-            if ($($result[$i].iscsi_target_extent_type) -eq "Disk")
+            try
             {
-
-                $Disk_path = $($result[$i].iscsi_target_extent_path)
-                $value = $Disk_path.Substring($Disk_path.Length - 3)
-
-                $DiskFreenas = Get-FreenasDisk -Output False
-
-                foreach ($item in $DiskFreenas)
+                if ($($result[$i].iscsi_target_extent_type) -eq "Disk")
                 {
-                    if ($item.Name -eq $value)
+
+                    $Disk_path = $($result[$i].iscsi_target_extent_path)
+                    $value = $Disk_path.Substring($Disk_path.Length - 3)
+
+                    $DiskFreenas = Get-FreenasDisk -Output False
+
+                    foreach ($item in $DiskFreenas)
                     {
-                        $diskSize = $Item.Size_GB
+                        if ($item.Name -eq $value)
+                        {
+                            $diskSize = $Item.Size_GB
+                        }
                     }
+
                 }
-
             }
-
+            catch {}
             $temp = New-Object System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value  "$($result[$i].id)"
             $temp | Add-Member -MemberType NoteProperty -Name "Extent_Type" -Value "$($result[$i].iscsi_target_extent_type)" 
@@ -55,7 +59,7 @@
 
             $Extent.Add($temp) | Out-Null
         }
-
+        
 
         return $Extent
 

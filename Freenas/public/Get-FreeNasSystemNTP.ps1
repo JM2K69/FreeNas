@@ -6,9 +6,11 @@
 
     Begin
     {
-        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
+        Get-FreeNasStatus
+        switch ( $Script:status)
         {
-            Write-Host "Your aren't connected "-ForegroundColor Red
+            $true {  }
+            $false {Break}
         }
 
     }
@@ -17,7 +19,7 @@
         $Uri = "http://$script:SrvFreenas/api/v1.0/system/ntpserver/"
 
         try
-        { 
+        {
             $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get
 
         }
@@ -27,7 +29,7 @@
         $FreenasConf = New-Object System.Collections.ArrayList
         for ($i = 0; $i -lt $result.Count; $i++)
         {
-            $Name = $result[$i].disk_name
+
             $temp = New-Object System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
             $temp | Add-Member -MemberType NoteProperty -Name "NTP_Server" -Value "$($result[$i].ntp_address)"

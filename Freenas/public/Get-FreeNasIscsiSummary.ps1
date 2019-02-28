@@ -6,10 +6,13 @@
 
     Begin
     {
-        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
+        Get-FreeNasStatus
+        switch ( $Script:status)
         {
-            Write-Host "Your aren't connected "-ForegroundColor Red
+            $true {  }
+            $false {Break}
         }
+
 
     }
     Process
@@ -17,10 +20,8 @@
         $Conf_Iscsi = Get-FreenasIscsiConf
         $Extent_Iscsi = Get-FreenasIscsiExtent
         $Initiator_Iscsi = Get-FreenasIscsiInitiator
-        $Portal_Iscsi = Get-FreenasIscsiPortal
+        $Association = Get-FreenasIscsiAssociat2Extent -Output Name
         $Target_Iscsi = Get-FreenasIscsiTarget
-        $TargetAsso = Get-FreenasIscsiAssociat2Extent -Output Name
-        $Service_ISCSI = Get-FreenasService
 
         New-banner -Text "____________" -Online -FontColor Green
         New-banner -Text "Iscsi Summary" -Online 
@@ -29,6 +30,9 @@
         Write-Host " $script:SrvFreenas" -NoNewline -ForegroundColor Cyan
         Write-Host " Iscsi Configuration : " 
         $Conf_Iscsi
+
+        Write-host "The Iscsi Portal : "
+        Get-FreenasIscsiPortal
 
         $TotalSize = ""
         for ($i = 0; $i -lt $Extent_Iscsi.Count; $i++)
@@ -39,9 +43,18 @@
         Write-host "The Server have"$($Extent_Iscsi).count"Extent(s) with a total size" -NoNewline
         Write-Host " $TotalSize " -NoNewline -ForegroundColor Cyan 
         Write-Host "GB"
-
+        Write-host "The Iscsi Extent Type :" 
         $Extent_Iscsi | FT
+        Write-host "The Target Iscsi :" 
+
+        $Target_Iscsi | ft
+        Write-host "The Association Target with Extend :" 
+
+        $Association |ft
+    }
+    End
+    {
+        New-banner -Text "End Summary"  -Online -FontColor Red
 
     }
-    End {}
 }

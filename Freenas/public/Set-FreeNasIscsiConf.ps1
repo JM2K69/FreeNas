@@ -21,16 +21,17 @@
 
     Begin
     {
-        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
+        Get-FreeNasStatus
+        switch ( $Script:status)
         {
-            Write-Host "Your aren't connected "-ForegroundColor Red
-
+            $true {  }
+            $false {Break}
         }
 
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/scriptconfiguration/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/globalconfiguration/"
 
         $IscsiConf = new-Object -TypeName PSObject
 

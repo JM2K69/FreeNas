@@ -45,11 +45,13 @@
     Begin
     {
 
-        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
+        Get-FreeNasStatus
+        switch ( $Script:status)
         {
-            Write-Host "Your aren't connected "-ForegroundColor Red
-
+            $true {  }
+            $false {Break}
         }
+
     }
 
     Process

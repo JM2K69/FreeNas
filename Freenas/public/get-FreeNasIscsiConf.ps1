@@ -5,16 +5,17 @@
 
     Begin
     {
-        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
+        Get-FreeNasStatus
+        switch ( $Script:status)
         {
-            Write-Host "Your aren't connected "-ForegroundColor Red
-
+            $true {  }
+            $false {Break}
         }
 
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/scriptconfiguration/"
+        $Uri = "http://$Script:SrvFreenas/api/v1.0/services/iscsi/globalconfiguration/"
 
         try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
 
@@ -32,7 +33,6 @@
         $temp | Add-Member -MemberType NoteProperty -Name "Pool available space Threshold (%)" -Value $result.iscsi_pool_avail_threshold
 
         $IscsiConf.Add($temp) | Out-Null
-
 
         return $IscsiConf | fl
     }

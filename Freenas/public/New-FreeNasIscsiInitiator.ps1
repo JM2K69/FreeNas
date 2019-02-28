@@ -19,11 +19,13 @@
 
     Begin
     {
-        if (  $script:SrvFreenas -eq $null -or $script:Session -eq $null)
+        Get-FreeNasStatus
+        switch ( $Script:status)
         {
-            Write-Host "Your aren't connected "-ForegroundColor Red
-
+            $true {  }
+            $false {Break}
         }
+
 
     }
     Process
@@ -36,7 +38,9 @@
             iscsi_target_initiator_initiators   = $AuthInitiators
             iscsi_target_initiator_auth_network = $AuthNetwork
         }
-    
+        
+        $post = $Obj |ConvertTo-Json
+
         $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
 
