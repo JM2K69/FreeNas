@@ -1,6 +1,6 @@
 # 1. French PowerShell User Group
 
-![Logo FRPUSG](img/Logo.PNG)  **LightningDemos** 26/02/2019  
+![Logo FRPUSG](img/Logo.png)  **LightningDemos** 26/02/2019  
 
 * Presentations rapide (10 minutes max).
 * Plusieures sujets
