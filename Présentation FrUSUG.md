@@ -88,14 +88,14 @@ Lien Web de l'API v1.0 [api.freenas.org](http://api.freenas.org)
 
 ## 2.2 Module powershell
 
-Dans cette première version seulement quelques fonctions sont disponnibles, elles sont  orientées autour du Stockages et de la configuration ISCI.
+Dans cette première version seulement quelques fonctions sont disponnibles, elles sont  orientées autour du Stockages et de la configuration iSCSI.
 
 
 ![Logo Ixsystems](img/Modules.PNG)
 
 *Exemples de commandes :*
 
-* **Connection au Server**
+* **Connexion au Serveur**
 
 ```powershell
 Connect-FreeNasServer -server '@IPv4' -username 'root' -password 'YourStrongPa$$word!!'
