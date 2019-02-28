@@ -1,6 +1,23 @@
 # 1. French PowerShell User Group
 
-![Logo FRPUSG](img/logo.PNG)  **LightningDemos** 26/02/2019  
+![Logo FRPUSG](img/Logo.PNG)  **LightningDemos** 26/02/2019  
+
+* Presentations rapide (10 minutes max).
+* Plusieures sujets
+* Les demos vous offrent assez pour decouvrir un sujet et vous pointes vers d'autres ressources pour en apprendre plus
+ 
+# AGENDA #
+
+* PowerShell avec Freenas (Jerome Bezet-Torres)
+* DBATools (Olivier Miossec)
+* BetterCredentials (Laurent Lienhard)
+* PSClassUtils (Stephane Van Gulick)
+
+# REJOINDRE LE MEETING #
+Youtube en direct: https://www.youtube.com/watch?v=3OR143IPQ4o
+
+# PRESENTER UNE LIGHTNING DEMO #
+https://goo.gl/forms/D3GkkSsmGmSrPXaE2
 
 ![freenas Logo](img/FreeNas.png)
  
