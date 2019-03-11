@@ -1,4 +1,4 @@
-#region Connection au serveur
+﻿#region Connection au serveur
 Import-Module C:\Users\Jay\Documents\GitHub\FreeNas\Freenas\FreeNas.psm1 -Force
 Connect-FreeNasServer -Server 10.0.10.0
 
@@ -14,7 +14,9 @@ Get-FreeNasVolume
 
 #region Creation de Volumes Zvol
 New-FreeNasZvol -VolumeName data -ZvolName Zvol1 -Volsize 15 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh FrUSUG"
+New-FreeNasZvol -VolumeName data -ZvolName Zvol1a -Volsize 35 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh FrUSUG"
 New-FreeNasZvol -VolumeName data2 -ZvolName Zvol2 -Volsize 20 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh FrUSUG"
+New-FreeNasZvol -VolumeName data2 -ZvolName Zvol2a -Volsize 60 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh FrUSUG"
 Get-FreeNasZvol -VolumeName data
 Get-FreeNasZvol -VolumeName data2
 #endregion Creation de Volumes Zvol
@@ -28,8 +30,8 @@ Get-FreeNasZvol -VolumeName data
 #region Configuration du partage ISCSI
 # recupération des Infos
 Get-FreeNasIscsiConf
-#creattion du Configurtation Global avec un nom qui commence par iqn
-Set-FreeNasIscsiConf -BaseName "iqn.2019-10.org.FrUSUG.loc" -pool_avail_threshold 75
+#creation du Configurtation Global avec un nom qui commence par iqn 
+Set-FreeNasIscsiConf -BaseName "iqn.2019-10.org.JM2K69.Pwsh" -pool_avail_threshold 75
 Get-FreeNasIscsiConf
 
 #region Le Portail
@@ -48,15 +50,21 @@ New-FreeNasIscsiTarget -TargetName lun1 -TargetAlias lun1
 New-FreeNasIscsiTarget -TargetName lun2 -TargetAlias lun2
 New-FreeNasIscsiTarget -TargetName lun3 -TargetAlias lun3
 New-FreeNasIscsiTarget -TargetName lun4 -TargetAlias lun4
+New-FreeNasIscsiTarget -TargetName lun5 -TargetAlias lun5
+New-FreeNasIscsiTarget -TargetName lun6 -TargetAlias lun6
+
 Get-FreeNasIscsiTarget
 #endregion Cible ou target
 
 #region Extent
 Get-FreeNasIscsiExtent
-New-FreeNasIscsiExtent -ExtentName lun1 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath da5
-New-FreeNasIscsiExtent -ExtentName lun2 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath da6
-New-FreeNasIscsiExtent -ExtentName lun3 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath zvol/data2/Zvol2
-New-FreeNasIscsiExtent -ExtentName lun4 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath zvol/data/Zvol1
+New-FreeNasIscsiExtent -ExtentName Disk05 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath da5
+New-FreeNasIscsiExtent -ExtentName Disk06 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath da6
+New-FreeNasIscsiExtent -ExtentName Zvol1 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath zvol/data/Zvol1
+New-FreeNasIscsiExtent -ExtentName Zvol2 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath zvol/data2/Zvol2
+New-FreeNasIscsiExtent -ExtentName Zvol1a -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath zvol/data/Zvol1a
+New-FreeNasIscsiExtent -ExtentName Zvol2a -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath zvol/data2/Zvol2a
+
 Get-FreeNasIscsiExtent
 #endregion Extent
 
@@ -67,12 +75,17 @@ New-FreeNasIscsiAssociat2Extent -TargetId 1 -ExtentId 1
 New-FreeNasIscsiAssociat2Extent -TargetId 2 -ExtentId 2
 New-FreeNasIscsiAssociat2Extent -TargetId 3 -ExtentId 3
 New-FreeNasIscsiAssociat2Extent -TargetId 4 -ExtentId 4
+New-FreeNasIscsiAssociat2Extent -TargetId 5 -ExtentId 5
+New-FreeNasIscsiAssociat2Extent -TargetId 6 -ExtentId 6
+
 Get-FreeNasIscsiAssociat2Extent -Output Name
 
 New-FreeNasIscsiTargetGroup -TargetId 1 -TargetPortalGroup 1
 New-FreeNasIscsiTargetGroup -TargetId 2 -TargetPortalGroup 1
 New-FreeNasIscsiTargetGroup -TargetId 3 -TargetPortalGroup 1
 New-FreeNasIscsiTargetGroup -TargetId 4 -TargetPortalGroup 1
+New-FreeNasIscsiTargetGroup -TargetId 5 -TargetPortalGroup 1
+New-FreeNasIscsiTargetGroup -TargetId 6 -TargetPortalGroup 1
 
 #endregion Association
 
@@ -87,22 +100,12 @@ Get-FreeNasIscsiSummary
 
 #PowerCli ESXI
 Connect-VIServer -Server 10.0.10.30
-$vmhost = Get-VMHost
-$vmhost | Get-VMHostNetworkAdapter -Physical |  Select-Object Name
-$vmhost | Get-VirtualSwitch | Select-Object  Name, Nic
-
+$vmhost = Get-VMHost 
 $vmhost | New-VirtualSwitch -Name vSwitch2 -Nic vmnic2, vmnic3 -Mtu 9000
-$vmhost | New-VirtualSwitch -Name vSwitch2 -Nic vmnic4, vmnic5 -Mtu 9000
 $vmhost | New-VMHostNetworkAdapter -PortGroup iSCSI01 -VirtualSwitch vSwitch2 -IP 10.0.10.31 -SubnetMask 255.0.0.0 -Mtu 9000
-$vmhost | New-VMHostNetworkAdapter -PortGroup iSCSI02 -VirtualSwitch vSwitch2 -IP 10.0.10.32 -SubnetMask 255.0.0.0 -Mtu 9000
-
 $VMhost | Get-VMHostStorage | Set-VMHostStorage -SoftwareIScsiEnabled $True
 $VMhost | Get-VMHostHba -Type iScsi | Select-Object Name, Status, IScsiName
 $VMhost | Get-VMHostHba -Type iScsi | New-IScsiHbaTarget -Address 10.0.10.0
-$VMhost | Get-VMHostNetworkAdapter -VMKernel | ? {$_.PortGroupName -match 'iSCSI'} | select Devicename
-$VMHost | Get-VMHostHba -Type IScsi | Select Device
-$Hba = $vmhost | Get-VMHostHba -Type iScsi
-New-IScsiHbaTarget -IScsiHba $Hba -Address 10.0.10.0
 $VMhost | Get-VMHostStorage -RescanAllHba -RescanVmfs
 function Get-FreeEsxiLUN
 {
