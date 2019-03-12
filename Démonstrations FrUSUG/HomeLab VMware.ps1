@@ -13,10 +13,10 @@ Get-FreeNasVolume
 #endregion Création de Volumes
 
 #region Creation de Volumes Zvol
-New-FreeNasZvol -VolumeName data -ZvolName Zvol1 -Volsize 15 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh FrUSUG"
-New-FreeNasZvol -VolumeName data -ZvolName Zvol1a -Volsize 35 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh FrUSUG"
-New-FreeNasZvol -VolumeName data2 -ZvolName Zvol2 -Volsize 20 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh FrUSUG"
-New-FreeNasZvol -VolumeName data2 -ZvolName Zvol2a -Volsize 60 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh FrUSUG"
+New-FreeNasZvol -VolumeName data -ZvolName Zvol1 -Volsize 15 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh JM2K69"
+New-FreeNasZvol -VolumeName data -ZvolName Zvol1a -Volsize 35 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh JM2K69"
+New-FreeNasZvol -VolumeName data2 -ZvolName Zvol2 -Volsize 20 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh JM2K69"
+New-FreeNasZvol -VolumeName data2 -ZvolName Zvol2a -Volsize 60 -Unit GiB -Compression lz4 -Sparse True -Comment "Pwsh JM2K69"
 Get-FreeNasZvol -VolumeName data
 Get-FreeNasZvol -VolumeName data2
 #endregion Creation de Volumes Zvol
@@ -88,8 +88,6 @@ New-FreeNasIscsiTargetGroup -TargetId 5 -TargetPortalGroup 1
 New-FreeNasIscsiTargetGroup -TargetId 6 -TargetPortalGroup 1
 
 #endregion Association
-
-
 
 #endregion Configuration du partage ISCSI
 Get-FreeNasService | Where-Object {$_.srv_service -eq "iscsitarget"}
