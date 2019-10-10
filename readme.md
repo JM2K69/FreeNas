@@ -45,7 +45,8 @@ https://youtu.be/JpkEP9nkiN4
 
 ## Usage
 
-![First Demo](https://youtu.be/JpkEP9nkiN4)
+Here the first release.
+https://youtu.be/JpkEP9nkiN4
 
 ## Contribute
 
