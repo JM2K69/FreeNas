@@ -14,10 +14,11 @@
 
     Begin
     {
+        Get-PowerShellVersion
         $global:SrvFreenas = ""
         $global:Session = ""
         $Uri = "http://$Server/api/v1.0"
-        New-banner -Text "Freenas Module v1.1" -Online 
+        New-banner -Text "Freenas Module v1.3" -Online 
         Write-Verbose "The Server URI i set to $Uri"
 
     }
@@ -25,23 +26,32 @@
     {
         $Script:SrvFreenas = $Server
 
-        $creds = Get-Credential
-        $User = $creds.UserName.ToString()
-
-        $authInfo = [System.Text.Encoding]::UTF8.GetBytes((“{0}:{1}” -f $User, ([Runtime.InteropServices.Marshal]::PtrToStringBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($creds.Password)))))
-        $Headers = @{ Authorization = "Basic {0}" -f [System.Convert]::ToBase64String($authInfo) } 
-
-        try
+        switch ($Script:Version)
         {
-            $result = Invoke-RestMethod -Uri $Uri -Headers $Headers -Method Get -SessionVariable Freenas_S
-        }
-        catch
-        {
-            Write-Error "Error when try to connect to  $Uri"
-            return
-        }
-        $Script:Session = $Freenas_S
+            '5'
+            {
+                Write-Verbose "Powershell $Script:Version is detected"
+                try {$result = Invoke-RestMethod -Uri $Uri  -Method Get -SessionVariable Freenas_S -Credential (Get-Credential)}
+                catch
+                {
+                    Write-Error "Error when try to connect to  $Uri"
+                    return
+                }
+                $Script:Session = $Freenas_S
 
+            }
+            '6'
+            {
+                Write-Verbose "Powershell $Script:Version is detected"
+                try {$result = Invoke-RestMethod -Uri $Uri -Authentication Basic -AllowUnencryptedAuthentication -Method Get -SessionVariable Freenas_S -Credential (Get-Credential)}
+                catch
+                {
+                    Write-Error "Error when try to connect to  $Uri"
+                    return
+                }
+                $Script:Session = $Freenas_S
+            }
+        }
         try
         {
             Write-Verbose "try to check Storage to verify the connection"
