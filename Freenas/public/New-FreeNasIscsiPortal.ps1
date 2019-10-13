@@ -1,5 +1,4 @@
-﻿function New-FreenasIscsiPortal
-{
+﻿function New-FreenasIscsiPortal {
     [CmdletBinding()]
     [Alias()]
     [OutputType([int])]
@@ -11,7 +10,7 @@
         [Parameter (Mandatory = $false)]
         [string]$Port = 3260 ,
 
- 
+
         [Parameter (Mandatory = $false)]
         [string]$Comment
 
@@ -20,27 +19,23 @@
     )
 
 
-    Begin
-    {
+    Begin {
         Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
+        switch ( $Script:status) {
+            $true { }
+            $false { Break }
         }
 
 
     }
-    Process
-    {
+    Process {
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/"
 
         $input = @($IpPortal + ":" + $Port)
 
         $IpPortalPort = @()
 
-        foreach ($item in $input)
-        {
+        foreach ($item in $input) {
             $IpPortalPort += $item
         }
 
@@ -49,10 +44,10 @@
             iscsi_target_portal_comment = $Comment
         }
 
-        $post = $Obj |ConvertTo-Json
+        $post = $Obj | ConvertTo-Json
         $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
     End
-    {}
+    { }
 }

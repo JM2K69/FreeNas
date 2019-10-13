@@ -1,50 +1,42 @@
-function Get-FreeNasInterface
-{
+function Get-FreeNasInterface {
     [CmdletBinding()]
     [Alias()]
-   
+
     Param
     ()
 
 
-    Begin
-    {
+    Begin {
         Get-FreeNasStatus
-        switch ( $Script:status)
-        {
+        switch ( $Script:status) {
             $true { }
             $false { Break }
         }
 
     }
-    Process
-    {
+    Process {
         $Uri = "http://$script:SrvFreenas/api/v1.0/network/interface/"
 
         try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
-       
+
         Catch { }
 
     }
-    End
-    {
+    End {
         $Global = new-Object -TypeName PSObject
 
-        switch ($result.int_dhcp)
-        {
-            'True' 
-            {
+        switch ($result.int_dhcp) {
+            'True' {
                 $Global | add-member -name "Id" -membertype NoteProperty -Value "$($result.id)"
-                $Global | add-member -name "Satus" -membertype NoteProperty -Value "$($result.int_media_status)"            
+                $Global | add-member -name "Satus" -membertype NoteProperty -Value "$($result.int_media_status)"
                 $Global | add-member -name "Alias" -membertype NoteProperty -Value "$($result.int_aliases)"
                 $Global | add-member -name "Dhcp" -membertype NoteProperty -Value "$($result.int_dhcp)"
                 $Global | add-member -name "Name" -membertype NoteProperty -Value "$($result.int_interface)"
                 $Global | add-member -name "Ipv6" -membertype NoteProperty -Value "$($result.int_ipv6auto)"
             }
-            Default 
-            {
+            Default {
                 $Global | add-member -name "Id" -membertype NoteProperty -Value "$($result.id)"
-                $Global | add-member -name "Satus" -membertype NoteProperty -Value "$($result.int_media_status)"            
+                $Global | add-member -name "Satus" -membertype NoteProperty -Value "$($result.int_media_status)"
                 $Global | add-member -name "Alias" -membertype NoteProperty -Value "$($result.int_aliases)"
                 $Global | add-member -name "Dhcp" -membertype NoteProperty -Value "$($result.int_dhcp)"
                 $Global | add-member -name "Name" -membertype NoteProperty -Value "$($result.int_interface)"
@@ -56,7 +48,7 @@ function Get-FreeNasInterface
         }
 
 
-        return $Global 
+        return $Global
     }
-    
+
 }
