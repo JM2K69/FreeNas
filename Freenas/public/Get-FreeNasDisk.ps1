@@ -18,10 +18,10 @@
         }
     }
 
-    $Uri = "http://$Script:SrvFreenas/api/v1.0/storage/disk/"
+    $Uri = "api/v1.0/storage/disk/"
     try
     {
-        $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get
+        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
     }
     Catch
     {
