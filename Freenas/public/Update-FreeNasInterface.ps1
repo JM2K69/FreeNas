@@ -28,7 +28,7 @@ function Update-FreeNasInterface
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/network/interface/$Id/"
+        $Uri = "api/v1.0/network/interface/$Id/"
         $Obj = new-Object -TypeName PSObject
 
         Write-verbose "Detect DHCP status"
@@ -59,8 +59,7 @@ function Update-FreeNasInterface
     End
     {
 
-        $post = $Obj | ConvertTo-Json
-        $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -method Put -body $Obj -Uri $Uri
         Write-Warning "You need to reconnect to the host $Ipv4/$NetMask"
 
     }

@@ -31,7 +31,7 @@
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/globalconfiguration/"
+        $Uri = "api/v1.0/services/iscsi/globalconfiguration/"
 
         $IscsiConf = new-Object -TypeName PSObject
 
@@ -52,9 +52,7 @@
             $IscsiConf | add-member -name "iscsi_pool_avail_threshold" -membertype NoteProperty -Value $pool_avail_threshold
         }
 
-        $post = $IscsiConf | ConvertTo-Json
-
-        $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -method Put -body $IscsiConf -Uri $Uri
 
     }
     End

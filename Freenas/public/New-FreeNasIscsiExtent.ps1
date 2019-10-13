@@ -36,7 +36,7 @@
     }
 
     Process {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/extent/"
+        $Uri = "api/v1.0/services/iscsi/extent/"
 
 
         $Obj = [Ordered]@{
@@ -47,8 +47,7 @@
 
         }
 
-        $post = $Obj | convertto-json
-        invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
     }
 

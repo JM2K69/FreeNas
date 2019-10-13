@@ -24,7 +24,7 @@
 
     }
     Process {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/targetgroup/"
+        $Uri = "api/v1.0/services/iscsi/targetgroup/"
 
 
 
@@ -37,9 +37,8 @@
             iscsi_target_initialdigest  = "Auto"
         }
 
-        $post = $Obj | ConvertTo-Json
 
-        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
 
     }

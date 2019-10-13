@@ -39,7 +39,7 @@ function Update-FreeNasGlobalConfig
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/network/globalconfiguration/"
+        $Uri = "api/v1.0/network/globalconfiguration/"
 
         $Obj = new-Object -TypeName PSObject
 
@@ -84,8 +84,7 @@ function Update-FreeNasGlobalConfig
     End
     {
 
-        $post = $Obj | ConvertTo-Json
-        $response = invoke-RestMethod -method put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -method put -body $Obj -Uri $Uri
 
 
     }

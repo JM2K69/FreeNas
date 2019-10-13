@@ -18,10 +18,10 @@ function Update-FreeNasSystem
         $false { Break }
     }
 
-    $Uri = "http://$Script:SrvFreenas/api/v1.0/system/update/update/"
+    $Uri = "api/v1.0/system/update/update/"
     try
     {
-        $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Post
+        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Post
     }
     Catch
     {
