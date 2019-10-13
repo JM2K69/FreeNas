@@ -29,6 +29,9 @@ function Invoke-FreeNasRestMethod {
 
     Process {
 
+        if ($null -eq $Script:SrvFreenas) {
+            Throw "Not Connected. Connect to the FreeNas with Connect-FreeNas"
+        }
 
         $Server = $Script:SrvFreenas
         $sessionvariable = $Script:Session
