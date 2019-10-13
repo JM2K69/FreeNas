@@ -1,26 +1,31 @@
-﻿function Get-FreeNasSystemEmail {
+﻿function Get-FreeNasSystemEmail
+{
     [Alias()]
     Param
     ()
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
 
     }
-    Process {
+    Process
+    {
         $Uri = "http://$script:SrvFreenas/api/v1.0/system/email/"
 
-        try {
+        try
+        {
             $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get
 
         }
 
-        Catch { }
+        Catch { throw }
 
         $FreeNasConf = New-Object System.Collections.ArrayList
 

@@ -1,5 +1,6 @@
-﻿function Set-FreeNasIscsiConf {
-    [CmdletBinding()]
+﻿function Set-FreeNasIscsiConf
+{
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [Alias()]
     [OutputType([int])]
     Param
@@ -18,29 +19,35 @@
     )
 
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
     }
-    Process {
+    Process
+    {
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/globalconfiguration/"
 
         $IscsiConf = new-Object -TypeName PSObject
 
 
-        if ( $PsBoundParameters.ContainsKey('BaseName') ) {
+        if ( $PsBoundParameters.ContainsKey('BaseName') )
+        {
             $IscsiConf | add-member -name "iscsi_basename" -membertype NoteProperty -Value $BaseName
         }
 
-        if ( $PsBoundParameters.ContainsKey('isns_servers') ) {
+        if ( $PsBoundParameters.ContainsKey('isns_servers') )
+        {
             $IscsiConf | add-member -name "iscsi_isns_servers" -membertype NoteProperty -Value $isns_servers
         }
 
-        if ( $PsBoundParameters.ContainsKey('pool_avail_threshold') ) {
+        if ( $PsBoundParameters.ContainsKey('pool_avail_threshold') )
+        {
 
             $IscsiConf | add-member -name "iscsi_pool_avail_threshold" -membertype NoteProperty -Value $pool_avail_threshold
         }
@@ -50,7 +57,8 @@
         $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
-    End {
+    End
+    {
 
     }
 }

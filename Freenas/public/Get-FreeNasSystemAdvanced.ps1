@@ -6,26 +6,31 @@
 .EXAMPLE
     PS C:\> Get-FreeNasSystemAdvanced
 #>
-function Get-FreeNasSystemAdvanced {
+function Get-FreeNasSystemAdvanced
+{
     Param( )
 
     Get-FreeNasStatus
-    switch ( $Script:status) {
+    switch ( $Script:status)
+    {
         $true { }
         $false { Break }
     }
 
 
     $Uri = "http://$Script:SrvFreenas/api/v1.0/system/advanced/"
-    try {
+    try
+    {
         $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get
     }
-    Catch {
+    Catch
+    {
         Write-Warning "Error querying the NAS using URI $Uri"
         return
     }
 
-    foreach ($Info in $results) {
+    foreach ($Info in $results)
+    {
         [PSCustomObject]@{
             Advanced_mode           = ($Info.adv_advancedmode)
             Advanced_Autotune       = ($Info.adv_autotune)

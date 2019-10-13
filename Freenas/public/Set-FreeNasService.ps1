@@ -1,5 +1,6 @@
-﻿function Set-FreeNasService {
-    [CmdletBinding()]
+﻿function Set-FreeNasService
+{
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [Alias()]
     [OutputType([int])]
     Param
@@ -16,15 +17,18 @@
     )
 
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
     }
-    Process {
+    Process
+    {
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/services/$Services/"
 
         $Status = new-Object -TypeName PSObject
@@ -37,7 +41,8 @@
         $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
-    End {
+    End
+    {
 
     }
 }

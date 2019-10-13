@@ -1,4 +1,5 @@
-﻿function Get-FreeNasZvol {
+﻿function Get-FreeNasZvol
+{
     [CmdletBinding()]
     [Alias()]
     [OutputType([int])]
@@ -10,26 +11,31 @@
     )
 
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
     }
-    Process {
+    Process
+    {
         $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/$VolumeName/zvols/"
 
         try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
 
-        Catch { }
+        Catch { throw }
 
     }
-    End {
+    End
+    {
         $ZVolume = New-Object System.Collections.ArrayList
 
-        for ($i = 0; $i -lt $result.Count; $i++) {
+        for ($i = 0; $i -lt $result.Count; $i++)
+        {
             $temp = New-Object System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result[$i].Name)"
             $temp | Add-Member -MemberType NoteProperty -Name "Comments" -Value "$($result[$i].comments)"

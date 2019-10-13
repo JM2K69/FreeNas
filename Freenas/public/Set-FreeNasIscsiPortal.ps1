@@ -1,5 +1,6 @@
-﻿function Set-FreeNasIscsiPortal {
-    [CmdletBinding()]
+﻿function Set-FreeNasIscsiPortal
+{
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [Alias()]
     Param
     (
@@ -20,15 +21,18 @@
     )
 
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
     }
-    Process {
+    Process
+    {
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/$Id/"
         $input = @($IpPortal + ":" + $Port)
 
@@ -45,7 +49,8 @@
         $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
-    End {
+    End
+    {
 
     }
 }

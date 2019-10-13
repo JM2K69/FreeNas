@@ -1,27 +1,32 @@
-function Get-FreeNasGlobalConfig {
+function Get-FreeNasGlobalConfig
+{
     [CmdletBinding()]
     [Alias()]
     Param
     ()
 
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
     }
-    Process {
+    Process
+    {
         $Uri = "http://$script:SrvFreenas/api/v1.0/network/globalconfiguration/"
 
         try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
 
-        Catch { }
+        Catch { throw }
 
     }
-    End {
+    End
+    {
         $Global = new-Object -TypeName PSObject
 
         $Global | add-member -name "Id" -membertype NoteProperty -Value "$($result.id)"

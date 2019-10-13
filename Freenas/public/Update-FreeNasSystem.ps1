@@ -6,20 +6,25 @@ This function download all available update for your system and perform update
 .EXAMPLE
     PS C:\> Update-FreeNasSystem
 #>
-function Update-FreeNasSystem {
+function Update-FreeNasSystem
+{
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     Param( )
 
     Get-FreeNasStatus
-    switch ( $Script:status) {
+    switch ( $Script:status)
+    {
         $true { }
         $false { Break }
     }
 
     $Uri = "http://$Script:SrvFreenas/api/v1.0/system/update/update/"
-    try {
+    try
+    {
         $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Post
     }
-    Catch {
+    Catch
+    {
         Write-Warning "Error querying the NAS using URI $Uri"
         return
     }

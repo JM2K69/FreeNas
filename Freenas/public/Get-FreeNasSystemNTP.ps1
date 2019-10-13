@@ -1,28 +1,34 @@
-﻿function Get-FreeNasSystemNTP {
+﻿function Get-FreeNasSystemNTP
+{
     [Alias()]
     Param
     ()
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
     }
-    Process {
+    Process
+    {
         $Uri = "http://$script:SrvFreenas/api/v1.0/system/ntpserver/"
 
-        try {
+        try
+        {
             $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get
 
         }
 
-        Catch { }
+        Catch { throw }
 
         $FreenasConf = New-Object System.Collections.ArrayList
-        for ($i = 0; $i -lt $result.Count; $i++) {
+        for ($i = 0; $i -lt $result.Count; $i++)
+        {
 
             $temp = New-Object System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"

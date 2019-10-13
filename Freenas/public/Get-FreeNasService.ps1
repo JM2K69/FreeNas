@@ -1,25 +1,30 @@
-﻿function Get-FreeNasService {
+﻿function Get-FreeNasService
+{
     Param
     ( )
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
 
     }
-    Process {
+    Process
+    {
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/services/"
 
         try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
 
-        Catch { }
+        Catch { throw }
 
     }
-    End {
+    End
+    {
         $result
     }
 }

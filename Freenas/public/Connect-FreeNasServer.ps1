@@ -1,4 +1,5 @@
-﻿function Connect-FreeNasServer {
+﻿function Connect-FreeNasServer
+{
     [CmdletBinding()]
     [Alias()]
     [OutputType([String])]
@@ -11,7 +12,8 @@
         $Server
     )
 
-    Begin {
+    Begin
+    {
         Get-PowerShellVersion
         $global:SrvFreenas = ""
         $global:Session = ""
@@ -20,31 +22,49 @@
         Write-Verbose "The Server URI i set to $Uri"
 
     }
-    Process {
+    Process
+    {
         $Script:SrvFreenas = $Server
 
-        switch ($Script:Version) {
-            '5' {
+        switch ($Script:Version)
+        {
+            '5'
+            {
                 Write-Verbose "Powershell $Script:Version is detected"
                 try { $result = Invoke-RestMethod -Uri $Uri  -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
-                catch {
+                catch
+                {
                     Write-Error "Error when try to connect to  $Uri"
                     return
                 }
                 $Script:Session = $Freenas_S
 
             }
-            '6' {
+            '6'
+            {
                 Write-Verbose "Powershell $Script:Version is detected"
                 try { $result = Invoke-RestMethod -Uri $Uri -Authentication Basic -AllowUnencryptedAuthentication -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
-                catch {
+                catch
+                {
+                    Write-Error "Error when try to connect to  $Uri"
+                    return
+                }
+                $Script:Session = $Freenas_S
+            }
+            '7'
+            {
+                Write-Verbose "Powershell $Script:Version is detected"
+                try { $result = Invoke-RestMethod -Uri $Uri -Authentication Basic -AllowUnencryptedAuthentication -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
+                catch
+                {
                     Write-Error "Error when try to connect to  $Uri"
                     return
                 }
                 $Script:Session = $Freenas_S
             }
         }
-        try {
+        try
+        {
             Write-Verbose "try to check Storage to verify the connection"
 
             $Uri = "http://$Script:SrvFreenas/api/v1.0/storage/disk/"
@@ -52,15 +72,18 @@
             $result2 = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get
         }
 
-        catch {
+        catch
+        {
             Write-Warning "Error querying the NAS using URI $Uri"
             return
         }
 
 
     }
-    End {
-        if ($result2 -ne $null) {
+    End
+    {
+        if ($null -ne $result2)
+        {
             Write-Host "Your are already connect to $Script:SrvFreenas "-ForegroundColor Cyan
         }
     }

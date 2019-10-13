@@ -1,5 +1,6 @@
-function Update-FreeNasInterface {
-    [CmdletBinding()]
+function Update-FreeNasInterface
+{
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [Alias()]
 
     Param
@@ -15,29 +16,35 @@ function Update-FreeNasInterface {
     )
 
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
     }
-    Process {
+    Process
+    {
         $Uri = "http://$script:SrvFreenas/api/v1.0/network/interface/$Id/"
         $Obj = new-Object -TypeName PSObject
 
         Write-verbose "Detect DHCP status"
         $Dhcp = Get-FreeNasInterface
 
-        switch ($Dhcp.Dhcp) {
-            'True' {
+        switch ($Dhcp.Dhcp)
+        {
+            'True'
+            {
                 $Obj | add-member -name "int_dhcp" -membertype NoteProperty -Value $false
                 $Obj | add-member -name "int_ipv4address" -membertype NoteProperty -Value $Ipv4.ToLower()
                 $Obj | add-member -name "int_v4netmaskbit" -membertype NoteProperty -Value $NetMask.ToLower()
             }
 
-            'False' {
+            'False'
+            {
                 $Obj | add-member -name "int_ipv4address" -membertype NoteProperty -Value $Ipv4.ToLower()
                 $Obj | add-member -name "int_v4netmaskbit" -membertype NoteProperty -Value $NetMask.ToLower()
 
@@ -49,7 +56,8 @@ function Update-FreeNasInterface {
 
 
     }
-    End {
+    End
+    {
 
         $post = $Obj | ConvertTo-Json
         $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
