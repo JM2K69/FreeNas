@@ -32,15 +32,16 @@ function Invoke-FreeNasRestMethod {
 
         $Server = $Script:SrvFreenas
         $sessionvariable = $Script:Session
+        $headers = $Script:Headers
 
         $fullurl = "http://${Server}/${uri}"
 
         try {
             if ($body) {
-                $response = Invoke-RestMethod $fullurl -Method $method -body ($body | ConvertTo-Json) -WebSession $sessionvariable
+                $response = Invoke-RestMethod $fullurl -Method $method -body ($body | ConvertTo-Json) -WebSession $sessionvariable -headers $headers
             }
             else {
-                $response = Invoke-RestMethod $fullurl -Method $method -WebSession $sessionvariable
+                $response = Invoke-RestMethod $fullurl -Method $method -WebSession $sessionvariable -headers $headers
             }
         }
 

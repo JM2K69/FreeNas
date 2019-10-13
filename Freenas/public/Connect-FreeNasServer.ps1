@@ -17,6 +17,7 @@
         Get-PowerShellVersion
         $global:SrvFreenas = ""
         $global:Session = ""
+        $global:Header
         $Uri = "http://$Server/api/v1.0"
         New-banner -Text "Freenas Module v1.3" -Online
         Write-Verbose "The Server URI i set to $Uri"
@@ -25,6 +26,8 @@
     Process
     {
         $Script:SrvFreenas = $Server
+        #headers, We need to have Content-type set to application/json...
+        $script:headers = @{ "Content-type" = "application/json" }
 
         switch ($Script:Version)
         {
