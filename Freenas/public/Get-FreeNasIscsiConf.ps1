@@ -1,29 +1,24 @@
-﻿function Get-FreeNasIscsiConf
-{
+﻿function Get-FreeNasIscsiConf {
     Param
     ( )
 
-    Begin
-    {
+    Begin {
         Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
+        switch ( $Script:status) {
+            $true { }
+            $false { Break }
         }
 
     }
-    Process
-    {
+    Process {
         $Uri = "http://$Script:SrvFreenas/api/v1.0/services/iscsi/globalconfiguration/"
 
         try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
 
-        Catch {}
+        Catch { }
 
     }
-    End
-    {
+    End {
         $IscsiConf = New-Object System.Collections.ArrayList
 
         $temp = New-Object PSObject

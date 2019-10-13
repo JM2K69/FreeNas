@@ -1,5 +1,4 @@
-﻿function Set-FreeNasIscsiPortal
-{
+﻿function Set-FreeNasIscsiPortal {
     [CmdletBinding()]
     [Alias()]
     Param
@@ -21,18 +20,15 @@
     )
 
 
-    Begin
-    {
+    Begin {
         Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
+        switch ( $Script:status) {
+            $true { }
+            $false { Break }
         }
 
     }
-    Process
-    {
+    Process {
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/$Id/"
         $input = @($IpPortal + ":" + $Port)
 
@@ -44,13 +40,12 @@
             iscsi_target_portal_discoveryauthmethod = $DiscoveryAuthMethod
         }
 
-        $post = $Obj |ConvertTo-Json
+        $post = $Obj | ConvertTo-Json
         $post
         $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
-    End
-    {
+    End {
 
     }
 }

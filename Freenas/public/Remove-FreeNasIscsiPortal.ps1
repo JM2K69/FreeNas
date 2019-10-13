@@ -1,5 +1,4 @@
-﻿function Remove-FreeNasIscsiPortal
-{
+﻿function Remove-FreeNasIscsiPortal {
     [CmdletBinding()]
     [Alias()]
     Param
@@ -14,32 +13,27 @@
     )
 
 
-    Begin
-    {
+    Begin {
         Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/$Id/"  }
-            $false {Break}
+        switch ( $Script:status) {
+            $true { $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/$Id/" }
+            $false { Break }
         }
 
 
-      
+
 
     }
-    Process
-    {
-        switch ($Confirm)
-        {
-            'True' { $response = invoke-RestMethod -method Delete -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"}
-            'False' { Write-Host 'The operation is aborted' -ForegroundColor Red}
+    Process {
+        switch ($Confirm) {
+            'True' { $response = invoke-RestMethod -method Delete -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json" }
+            'False' { Write-Host 'The operation is aborted' -ForegroundColor Red }
         }
 
-        
+
 
     }
-    End
-    {
-             
+    End {
+
     }
 }

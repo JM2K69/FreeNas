@@ -6,13 +6,12 @@
 .EXAMPLE
    Get-PowerShellVersion -verbose
 #>
-function Get-PowerShellVersion
-{
-    [CmdletBinding()]
-    Param
-    ()
+function Get-PowerShellVersion {
+   [CmdletBinding()]
+   Param
+   ()
 
-    $Script:Version = $PSVersionTable.PSVersion.Major
-    Write-Verbose "The module is running in Powershell $Version "
+   $Script:Version = $PSVersionTable.PSVersion.Major
+   Write-Verbose "The module is running in Powershell $Version "
 
 }

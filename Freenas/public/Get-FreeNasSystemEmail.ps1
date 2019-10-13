@@ -1,34 +1,29 @@
-﻿function Get-FreeNasSystemEmail
-{
+﻿function Get-FreeNasSystemEmail {
     [Alias()]
     Param
     ()
 
-    Begin
-    {
+    Begin {
         Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
+        switch ( $Script:status) {
+            $true { }
+            $false { Break }
         }
 
 
     }
-    Process
-    {
+    Process {
         $Uri = "http://$script:SrvFreenas/api/v1.0/system/email/"
 
-        try
-        { 
+        try {
             $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get
 
         }
 
-        Catch {}
+        Catch { }
 
         $FreeNasConf = New-Object System.Collections.ArrayList
-        
+
         $temp = New-Object PSObject
         $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value $result.id
         $temp | Add-Member -MemberType NoteProperty -Name "From_Email" -Value $result.em_fromemail
@@ -40,11 +35,11 @@
 
 
         $FreeNasConf.Add($temp) | Out-Null
-        
+
 
         return $FreeNasConf | fl
 
 
     }
-    End {}
+    End { }
 }
