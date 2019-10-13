@@ -38,7 +38,7 @@ function Invoke-FreeNasRestMethod {
 
         try {
             if ($body) {
-                $response = Invoke-RestMethod $fullurl -Method $method -body ($body | ConvertTo-Json) -WebSession $sessionvariable -headers $headers
+                $response = Invoke-RestMethod $fullurl -Method $method -body ($body | ConvertTo-Json -Compress) -WebSession $sessionvariable -headers $headers
             }
             else {
                 $response = Invoke-RestMethod $fullurl -Method $method -WebSession $sessionvariable -headers $headers
