@@ -15,9 +15,9 @@
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/"
+        $Uri = "api/v1.0/services/iscsi/portal/"
 
-        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
+        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
 
         Catch { throw }
 

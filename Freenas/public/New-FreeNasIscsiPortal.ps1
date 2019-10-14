@@ -29,7 +29,7 @@
 
     }
     Process {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/"
+        $Uri = "api/v1.0/services/iscsi/portal/"
 
         $input = @($IpPortal + ":" + $Port)
 
@@ -44,8 +44,7 @@
             iscsi_target_portal_comment = $Comment
         }
 
-        $post = $Obj | ConvertTo-Json
-        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
     }
     End

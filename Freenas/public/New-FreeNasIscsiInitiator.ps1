@@ -26,7 +26,7 @@
 
     }
     Process {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/authorizedinitiator/"
+        $Uri = "api/v1.0/services/iscsi/authorizedinitiator/"
 
 
 
@@ -35,9 +35,8 @@
             iscsi_target_initiator_auth_network = $AuthNetwork
         }
 
-        $post = $Obj | ConvertTo-Json
 
-        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
 
     }

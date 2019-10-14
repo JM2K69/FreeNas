@@ -7,9 +7,9 @@
         $false { Break }
     }
 
-    $Uri = "http://$Script:SrvFreenas/api/v1.0/services/iscsi/targetgroup/"
+    $Uri = "api/v1.0/services/iscsi/targetgroup/"
     try {
-        $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get
+        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
     }
     Catch {
         Write-Warning "Error querying the NAS using URI $Uri"

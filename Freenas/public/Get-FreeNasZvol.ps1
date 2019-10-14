@@ -23,9 +23,9 @@
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/$VolumeName/zvols/"
+        $Uri = "api/v1.0/storage/volume/$VolumeName/zvols/"
 
-        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
+        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
 
         Catch { throw }
 

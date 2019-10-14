@@ -15,9 +15,9 @@
 
     }
     Process {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/system/reboot/"
+        $Uri = "api/v1.0/system/reboot/"
 
-        $post = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $post = Invoke-FreeNasRestMethod -method Post -body $post -Uri $Uri
 
     }
     End

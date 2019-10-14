@@ -28,7 +28,7 @@
 
     }
     Process {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/target/"
+        $Uri = "api/v1.0/services/iscsi/target/"
 
         $Obj = new-Object -TypeName PSObject
 
@@ -42,8 +42,7 @@
 
         $Obj | add-member -name "iscsi_target_mode" -membertype NoteProperty -Value $TargetMode.ToLower()
 
-        $post = $Obj | ConvertTo-Json
-        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
     }
     End

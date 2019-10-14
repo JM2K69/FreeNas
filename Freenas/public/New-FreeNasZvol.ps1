@@ -53,7 +53,7 @@
 
     Process {
 
-        $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/$VolumeName/zvols/"
+        $Uri = "api/v1.0/storage/volume/$VolumeName/zvols/"
 
 
         $Zvolc = new-Object -TypeName PSObject
@@ -86,9 +86,7 @@
             $Zvolc | add-member -name "blocksize" -membertype NoteProperty -Value $BlokSize
         }
 
-        $post = $Zvolc | ConvertTo-Json
-
-        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -method Post -body $Zvolc -Uri $Uri
 
     }
 
