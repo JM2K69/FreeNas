@@ -9,22 +9,22 @@
         Get-FreeNasStatus
         switch ( $Script:status)
         {
-            $true { }
-            $false { Break }
+            $true {  }
+            $false {Break}
         }
 
     }
     Process
     {
-        $Uri = "api/v1.0/system/ntpserver/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/system/ntpserver/"
 
         try
         {
-            $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+            $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get
 
         }
 
-        Catch { throw }
+        Catch {}
 
         $FreenasConf = New-Object System.Collections.ArrayList
         for ($i = 0; $i -lt $result.Count; $i++)
@@ -43,5 +43,5 @@
         return $FreenasConf | FT
 
     }
-    End { }
+    End {}
 }

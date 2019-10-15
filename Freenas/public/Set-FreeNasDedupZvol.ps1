@@ -1,6 +1,6 @@
 ﻿function Set-FreeNasDedupZvol
 {
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
+    [CmdletBinding()]
     [Alias()]
     [OutputType([int])]
     Param
@@ -20,26 +20,28 @@
         Get-FreeNasStatus
         switch ( $Script:status)
         {
-            $true { }
-            $false { Break }
+            $true {  }
+            $false {Break}
         }
     }
     Process
     {
-        $Uri = "api/v1.0/storage/volume/$VolumeName/zvols/$ZvolName/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/$VolumeName/zvols/$ZvolName/"
 
-
+         
         $Dedup = new-Object -TypeName PSObject
 
         $Dedup | add-member -name "dedup" -membertype NoteProperty -Value "on"
         $Dedup | add-member -name "force" -membertype NoteProperty -Value "true"
 
 
-        $response = Invoke-FreeNasRestMethod -method Put -body $Dedup -Uri $Uri
+        $post = $Dedup |ConvertTo-Json
+
+        $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
     End
     {
-
+             
     }
 }

@@ -1,6 +1,6 @@
 ﻿#region Connection au serveur
-Import-Module C:\Users\Jay\Documents\GitHub\FreeNas\Freenas\FreeNas.psm1 -Force
-Connect-FreeNasServer -Server 10.0.10.0
+Import-Module FreeNas.psm1 -Force
+Connect-FreeNasServer -Server 192.168.0.25
 
 #endregion Connection au serveur
 

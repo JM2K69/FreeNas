@@ -8,20 +8,19 @@ This function download all available update for your system and perform update
 #>
 function Update-FreeNasSystem
 {
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     Param( )
 
     Get-FreeNasStatus
     switch ( $Script:status)
     {
-        $true { }
-        $false { Break }
+        $true {  }
+        $false {Break}
     }
 
-    $Uri = "api/v1.0/system/update/update/"
+    $Uri = "http://$Script:SrvFreenas/api/v1.0/system/update/update/"
     try
     {
-        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Post
+        $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Post
     }
     Catch
     {
@@ -29,5 +28,5 @@ function Update-FreeNasSystem
         return
     }
 
-    return $results
+    return $results 
 }

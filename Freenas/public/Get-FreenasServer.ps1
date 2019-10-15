@@ -1,5 +1,5 @@
-﻿function Get-FreeNasServer {
+﻿function Get-FreeNasServer{
     Param
-    ( )
-    return  $script:SrvFreenas
+    ( )  
+        return  $script:SrvFreenas
 }

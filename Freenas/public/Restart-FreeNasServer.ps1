@@ -1,4 +1,5 @@
-﻿function Restart-FreeNasServer {
+﻿function Restart-FreeNasServer
+{
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [Alias()]
     Param
@@ -6,20 +7,23 @@
     )
 
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
-            $true { }
-            $false { Break }
+        switch ( $Script:status)
+        {
+            $true {  }
+            $false {Break}
         }
 
     }
-    Process {
-        $Uri = "api/v1.0/system/reboot/"
+    Process
+    {
+        $Uri = "http://$script:SrvFreenas/api/v1.0/system/reboot/"
 
-        $post = Invoke-FreeNasRestMethod -method Post -body $post -Uri $Uri
+        $post = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
     End
-    { }
+    {}
 }

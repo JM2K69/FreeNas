@@ -1,4 +1,5 @@
-﻿function New-FreeNasIscsiInitiator {
+﻿function New-FreeNasIscsiInitiator
+{
     [CmdletBinding()]
     [Alias()]
     [OutputType([int])]
@@ -16,17 +17,20 @@
     )
 
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
-            $true { }
-            $false { Break }
+        switch ( $Script:status)
+        {
+            $true {  }
+            $false {Break}
         }
 
 
     }
-    Process {
-        $Uri = "api/v1.0/services/iscsi/authorizedinitiator/"
+    Process
+    {
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/authorizedinitiator/"
 
 
 
@@ -34,12 +38,13 @@
             iscsi_target_initiator_initiators   = $AuthInitiators
             iscsi_target_initiator_auth_network = $AuthNetwork
         }
+        
+        $post = $Obj |ConvertTo-Json
 
-
-        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
+        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
 
     }
     End
-    { }
+    {}
 }

@@ -7,21 +7,21 @@
     Write-Verbose "Test if you are connect to server FreeNas"
     switch ( $Script:status)
     {
-        $true
-        {
+        $true 
+        { 
             Write-Verbose "Success"
         }
-        $false
+        $false 
         {
             Write-Error "You are not connected to a FreeNas Server"
             return
         }
     }
 
-    $Uri = "api/v1.0/storage/disk/"
+    $Uri = "http://$Script:SrvFreenas/api/v1.0/storage/disk/"
     try
     {
-        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+        $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get
     }
     Catch
     {
@@ -33,7 +33,7 @@
     {
         $Name = ($disk.disk_name)
         $Size_GB = ([Math]::Round($disk.disk_size / 1024 / 1024 / 1024, 2))
-        Write-Verbose " Find the disk $name with the size $Size_GB"
+        Write-Verbose " Find the disk $name with the size $Size_GB  "
         [PSCustomObject]@{
             Name    = ($disk.disk_name)
             Size_GB = ([Math]::Round($disk.disk_size / 1024 / 1024 / 1024, 2))

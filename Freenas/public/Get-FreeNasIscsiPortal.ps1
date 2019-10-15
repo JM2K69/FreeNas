@@ -9,17 +9,17 @@
         Get-FreeNasStatus
         switch ( $Script:status)
         {
-            $true { }
-            $false { Break }
+            $true {  }
+            $false {Break}
         }
     }
     Process
     {
-        $Uri = "api/v1.0/services/iscsi/portal/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/"
 
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
+        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
 
-        Catch { throw }
+        Catch {}
 
 
         $Obj = New-Object System.Collections.ArrayList
@@ -29,7 +29,7 @@
         {
 
         }
-        else
+        else 
         {
             $temp | Add-Member -MemberType NoteProperty -Name "Portal IPs" -Value $($result.iscsi_target_portal_ips).Split(":")[0]
             $temp | Add-Member -MemberType NoteProperty -Name "Portal ports" -Value $($result.iscsi_target_portal_ips).Split(":")[1]
@@ -43,5 +43,5 @@
 
     }
     End
-    { }
+    {}
 }

@@ -9,19 +9,19 @@
         Get-FreeNasStatus
         switch ( $Script:status)
         {
-            $true { }
-            $false { Break }
+            $true {  }
+            $false {Break}
         }
 
 
     }
     Process
     {
-        $Uri = "api/v1.0/storage/volume/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/"
 
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
-
-        Catch { throw }
+        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
+       
+        Catch {}
 
     }
     End
@@ -36,13 +36,13 @@
             $temp | Add-Member -MemberType NoteProperty -Name "Status" -Value "$($result[$i].status)"
             $temp | Add-Member -MemberType NoteProperty -Name "Space_Used_GB" -Value "$([Math]::Round($result[$i].used/1024/1024/1024,4))"
             $temp | Add-Member -MemberType NoteProperty -Name "Space_Available_GB" -Value "$([Math]::Round($result[$i].avail/1024/1024/1024,2)) "
-
+            
             $FreenasVolume.Add($temp) | Out-Null
         }
-
+    
 
         return $FreenasVolume
-
+             
 
 
     }

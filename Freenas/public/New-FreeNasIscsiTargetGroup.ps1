@@ -1,4 +1,5 @@
-﻿function New-FreeNasIscsiTargetGroup {
+﻿function New-FreeNasIscsiTargetGroup
+{
     [CmdletBinding()]
     [Alias()]
     [OutputType([int])]
@@ -14,17 +15,20 @@
     )
 
 
-    Begin {
+    Begin
+    {
         Get-FreeNasStatus
-        switch ( $Script:status) {
-            $true { }
-            $false { Break }
+        switch ( $Script:status)
+        {
+            $true {  }
+            $false {Break}
         }
 
 
     }
-    Process {
-        $Uri = "api/v1.0/services/iscsi/targetgroup/"
+    Process
+    {
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/targetgroup/"
 
 
 
@@ -37,11 +41,12 @@
             iscsi_target_initialdigest  = "Auto"
         }
 
+        $post = $Obj |ConvertTo-Json
 
-        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
+        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
 
     }
     End
-    { }
+    {}
 }

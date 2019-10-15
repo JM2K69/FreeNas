@@ -5,10 +5,10 @@ This function return inforamtions about your FreeNas server.
 This function return inforamtions about your FreeNas server.
 .EXAMPLE
     PS C:\> Get-FreeNasSystemVersion
-
+    
     Name         : FreeNAS
     Full_version : FreeNAS-11.2-U2.1 (675d9aba9)
-    Version      :
+    Version      : 
 .INPUTS
     Inputs (if any)
 .OUTPUTS
@@ -16,25 +16,30 @@ This function return inforamtions about your FreeNas server.
 .NOTES
     General notes
 #>
-function Get-FreeNasSystemVersion {
+function Get-FreeNasSystemVersion
+{
     Param( )
 
     Get-FreeNasStatus
-    switch ( $Script:status) {
-        $true { }
-        $false { Break }
+    switch ( $Script:status)
+    {
+        $true {  }
+        $false {Break}
     }
 
-    $Uri = "api/v1.0/system/version/"
-    try {
-        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+    $Uri = "http://$Script:SrvFreenas/api/v1.0/system/version/"
+    try
+    {
+        $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get
     }
-    Catch {
+    Catch
+    {
         Write-Warning "Error querying the NAS using URI $Uri"
         return
     }
 
-    foreach ($Info in $results) {
+    foreach ($Info in $results)
+    {
         [PSCustomObject]@{
             Name         = ($Info.name)
             Full_version = ($Info.fullversion)

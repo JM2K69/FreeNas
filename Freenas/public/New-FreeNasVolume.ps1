@@ -34,8 +34,8 @@
         Get-FreeNasStatus
         switch ( $Script:status)
         {
-            $true { }
-            $false { Break }
+            $true {  }
+            $false {Break}
         }
 
     }
@@ -44,11 +44,11 @@
     {
 
         $FreenasVolume = @()
+       
+        $StartDisksNB..$($StartDisksNB + $NbDisks - 1) | Foreach-Object { $freenasvolume += "$DiskNamebase$_"}       
+        
+        $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/"
 
-        $StartDisksNB..$($StartDisksNB + $NbDisks - 1) | Foreach-Object { $freenasvolume += "$DiskNamebase$_" }
-
-        $Uri = "api/v1.0/storage/volume/"
-        $fullurl = "http://$($Script:Server)/${uri}"
 
         $Obj = [Ordered]@{
             volume_name = $VolumeName
@@ -56,14 +56,16 @@
                     vdevtype = $Vdevtype
                     disks    = $FreenasVolume
                 })
-
+           
         }
-        $post = $Obj | convertto-json -Depth 3
 
-        $response = Invoke-RestMethod -Method Post -body $post  -Uri $fullurl -WebSession $Script:Session -ContentType "application/json"
+
+        $post = $Obj |convertto-json -Depth 3
+
+        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
 
     End
-    { }
+    {}
 }

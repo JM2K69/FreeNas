@@ -1,4 +1,5 @@
-﻿function New-FreeNasIscsiExtent {
+﻿function New-FreeNasIscsiExtent
+{
 
     [CmdletBinding()]
     [Alias()]
@@ -25,18 +26,21 @@
     )
 
 
-    Begin {
+    Begin
+    {
 
         Get-FreeNasStatus
-        switch ( $Script:status) {
-            $true { }
-            $false { Break }
+        switch ( $Script:status)
+        {
+            $true {  }
+            $false {Break}
         }
 
     }
 
-    Process {
-        $Uri = "api/v1.0/services/iscsi/extent/"
+    Process
+    {
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/extent/"
 
 
         $Obj = [Ordered]@{
@@ -47,10 +51,11 @@
 
         }
 
-        invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
+        $post = $Obj |convertto-json 
+        invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
 
     End
-    { }
+    {}
 }

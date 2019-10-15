@@ -1,6 +1,6 @@
 ﻿function Set-FreeNasIscsiConf
 {
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
+    [CmdletBinding()]
     [Alias()]
     [OutputType([int])]
     Param
@@ -12,7 +12,7 @@
         [string]$isns_servers,
 
         [Parameter (Mandatory = $false)]
-        [ValidateSet("50", "55", "60", "65", "70", "75", "80", "85", "90", "95")]
+        [ValidateSet("50", "55", "60", "65", "70", "75", "80", "85", "90", "95")] 
         [INT]$pool_avail_threshold
 
 
@@ -24,14 +24,14 @@
         Get-FreeNasStatus
         switch ( $Script:status)
         {
-            $true { }
-            $false { Break }
+            $true {  }
+            $false {Break}
         }
 
     }
     Process
     {
-        $Uri = "api/v1.0/services/iscsi/globalconfiguration/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/globalconfiguration/"
 
         $IscsiConf = new-Object -TypeName PSObject
 
@@ -52,7 +52,9 @@
             $IscsiConf | add-member -name "iscsi_pool_avail_threshold" -membertype NoteProperty -Value $pool_avail_threshold
         }
 
-        $response = Invoke-FreeNasRestMethod -method Put -body $IscsiConf -Uri $Uri
+        $post = $IscsiConf |ConvertTo-Json
+
+        $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }
     End
