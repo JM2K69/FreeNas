@@ -1,4 +1,5 @@
-﻿function New-FreeNasVolume {
+﻿function New-FreeNasVolume
+{
 
     [CmdletBinding()]
     [Alias()]
@@ -27,24 +28,27 @@
     )
 
 
-    Begin {
+    Begin
+    {
 
         Get-FreeNasStatus
-        switch ( $Script:status) {
+        switch ( $Script:status)
+        {
             $true { }
             $false { Break }
         }
 
     }
 
-    Process {
+    Process
+    {
 
         $FreenasVolume = @()
 
         $StartDisksNB..$($StartDisksNB + $NbDisks - 1) | Foreach-Object { $freenasvolume += "$DiskNamebase$_" }
 
         $Uri = "api/v1.0/storage/volume/"
-
+        $fullurl = "http://$($Script:Server)/${uri}"
 
         $Obj = [Ordered]@{
             volume_name = $VolumeName
@@ -54,9 +58,9 @@
                 })
 
         }
+        $post = $Obj | convertto-json -Depth 3
 
-
-        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
+        $response = Invoke-RestMethod -Method Post -body $post  -Uri $fullurl -WebSession $Script:Session -ContentType "application/json"
 
     }
 
