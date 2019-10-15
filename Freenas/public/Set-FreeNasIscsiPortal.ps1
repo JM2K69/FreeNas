@@ -45,7 +45,7 @@
         }
 
         $post = $Obj |ConvertTo-Json
-        $post
+        
         $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
     }

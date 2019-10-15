@@ -71,7 +71,7 @@
     }
     End
     {
-        if ($result2 -ne $null)
+        if ($null -eq $result2 )
         {
             Write-Host "Your are already connect to $Script:SrvFreenas "-ForegroundColor Cyan
         }

@@ -39,7 +39,7 @@ function Update-FreeNasGlobalConfig
     }
     Process
     {
-        $Uri = "api/v1.0/network/globalconfiguration/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/network/globalconfiguration/"
 
         $Obj = new-Object -TypeName PSObject
 
@@ -80,11 +80,13 @@ function Update-FreeNasGlobalConfig
             $Obj | add-member -name "gc_httpproxy" -membertype NoteProperty -Value $Proxy.ToLower()
         }
 
+        $post = $Obj    | ConvertTo-Json
+
     }
     End
     {
 
-        $response = Invoke-FreeNasRestMethod -method put -body $Obj -Uri $Uri
+        $response = Invoke-FreeNasRestMethod -method put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
 
 
     }
