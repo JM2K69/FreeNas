@@ -2,6 +2,7 @@ function Get-FreeNasGlobalConfig
 {
     [CmdletBinding()]
     [Alias()]
+   
     Param
     ()
 
@@ -11,18 +12,18 @@ function Get-FreeNasGlobalConfig
         Get-FreeNasStatus
         switch ( $Script:status)
         {
-            $true { }
-            $false { Break }
+            $true {  }
+            $false {Break}
         }
 
     }
     Process
     {
-        $Uri = "api/v1.0/network/globalconfiguration/"
+        $Uri = "http://$script:SrvFreenas/api/v1.0/network/globalconfiguration/"
 
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
-
-        Catch { throw }
+        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
+       
+        Catch {}
 
     }
     End
