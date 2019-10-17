@@ -29,11 +29,14 @@ Describe  "Get Configuration" {
     It "Get FreeNas Global config" {
 
         $query = Get-FreeNasGlobalConfig
-        $query.id | Should not be $null
+        $query.Id | Should -BeIn (1..10)
         $query.Domain | Should not be $null
+        $query.Gateway | Should not be $null
         $query.Hostname | Should not be $null
-        $query.Nameserver1 | Should not be $null
-
+        $query.Nameserver1 | Should -BeNullOrEmpty
+        $query.Nameserver2 | Should -BeNullOrEmpty
+        $query.Nameserver3 | Should -BeNullOrEmpty
+        $query.Httpproxy | Should -BeNullOrEmpty
     }
 
 
