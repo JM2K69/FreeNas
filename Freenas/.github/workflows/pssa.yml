@@ -9,4 +9,5 @@ jobs:
     - name: lint
       uses: devblackops/github-action-psscriptanalyzer@master
       with:
+        sendComment: true
         repoToken: ${{ secrets.GITHUB_TOKEN }}
