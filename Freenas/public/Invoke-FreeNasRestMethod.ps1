@@ -57,6 +57,7 @@ function Invoke-FreeNasRestMethod
 
         catch
         {
+            Show-FreeNasException $_
             throw "Unable to use FreeNAS API"
         }
         $response
