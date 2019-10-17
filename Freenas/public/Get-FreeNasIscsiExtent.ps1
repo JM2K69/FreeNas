@@ -35,7 +35,7 @@
                     $Disk_path = $($result[$i].iscsi_target_extent_path)
                     $value = $Disk_path.Substring($Disk_path.Length - 3)
 
-                    $DiskFreenas = Get-FreenasDisk -Output False
+                    $DiskFreenas = Get-FreenasDisk 
 
                     foreach ($item in $DiskFreenas)
                     {
