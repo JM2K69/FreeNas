@@ -3,6 +3,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+#Requires -Modules @{ ModuleName="Pester"; RequiredVersion="4.9.0"}
+#Requires -Modules @{ModuleName="FreeNas"; ModuleVersion="1.3.1" }
+
 $IpsrvFreenas = Read-Host "Enter the IPaddress for the test"
 Connect-FreeNasServer -Server $IpsrvFreenas
 
