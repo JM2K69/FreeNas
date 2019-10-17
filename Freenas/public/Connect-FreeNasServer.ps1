@@ -18,7 +18,7 @@
         $global:SrvFreenas = ""
         $global:Session = ""
         $Uri = "http://$Server/api/v1.0"
-        New-banner -Text "Freenas Module v1.3" -Online 
+        New-banner -Text "Freenas Module v1.3" -FontName contessa
         Write-Verbose "The Server URI i set to $Uri"
 
     }
@@ -31,7 +31,7 @@
             '5'
             {
                 Write-Verbose "Powershell $Script:Version is detected"
-                try {$result = Invoke-RestMethod -Uri $Uri  -Method Get -SessionVariable Freenas_S -Credential (Get-Credential)}
+                try { $result = Invoke-RestMethod -Uri $Uri  -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
                 catch
                 {
                     Write-Error "Error when try to connect to  $Uri"
@@ -43,7 +43,7 @@
             '6'
             {
                 Write-Verbose "Powershell $Script:Version is detected"
-                try {$result = Invoke-RestMethod -Uri $Uri -Authentication Basic -AllowUnencryptedAuthentication -Method Get -SessionVariable Freenas_S -Credential (Get-Credential)}
+                try { $result = Invoke-RestMethod -Uri $Uri -Authentication Basic -AllowUnencryptedAuthentication -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
                 catch
                 {
                     Write-Error "Error when try to connect to  $Uri"
