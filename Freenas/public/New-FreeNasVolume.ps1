@@ -48,7 +48,6 @@
         $StartDisksNB..$($StartDisksNB + $NbDisks - 1) | Foreach-Object { $freenasvolume += "$DiskNamebase$_" }
 
         $Uri = "api/v1.0/storage/volume/"
-        $fullurl = "http://$($Script:Server)/${uri}"
 
         $Obj = [Ordered]@{
             volume_name = $VolumeName
@@ -58,9 +57,8 @@
                 })
 
         }
-        $post = $Obj | convertto-json -Depth 3
 
-        $response = Invoke-RestMethod -Method Post -body $post  -Uri $fullurl -WebSession $Script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -Method Post -body $Obj -Uri $uri
 
     }
 
