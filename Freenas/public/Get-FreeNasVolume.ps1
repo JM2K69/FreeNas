@@ -27,8 +27,7 @@
     End
     {
         $FreenasVolume = New-Object System.Collections.ArrayList
-        $nbdisk = $result.count
-        write-host "$nbdisk"
+
         if ($null -eq $result.count)
         {
             $temp = New-Object System.Object
