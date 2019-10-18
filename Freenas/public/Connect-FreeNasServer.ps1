@@ -18,7 +18,7 @@
         $global:SrvFreenas = ""
         $global:Session = ""
         $Uri = "http://$Server/api/v1.0"
-        New-banner -Text "Freenas Module v1.3" -FontName contessa
+        New-banner -Text "FreeNas v1.3.1" -FontName contessa
         Write-Verbose "The Server URI i set to $Uri"
 
     }
