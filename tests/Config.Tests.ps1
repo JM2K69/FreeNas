@@ -6,7 +6,19 @@
 #Requires -Modules @{ ModuleName="Pester"; RequiredVersion="4.9.0"}
 #Requires -Modules @{ModuleName="FreeNas"; ModuleVersion="1.3.1" }
 
-$IpsrvFreenas = Read-Host "Enter the IPaddress for the test"
+$TestsPath = Split-Path $MyInvocation.MyCommand.Path
+
+$RootFolder = (get-item $TestsPath).Parent
+
+Push-Location -Path $RootFolder.FullName
+
+set-location -Path $RootFolder.FullName
+
+Write-Verbose "Importing module"
+
+import-module .\Freenas -Force
+
+$IpsrvFreenas = Read-Host "Enter the IPaddress for the Tests"
 Connect-FreeNasServer -Server $IpsrvFreenas
 
 Describe  "Get Configuration" {
@@ -40,6 +52,16 @@ Describe  "Get Configuration" {
         $query.Nameserver2 | Should -BeNullOrEmpty
         $query.Nameserver3 | Should -BeNullOrEmpty
         $query.Httpproxy | Should -BeNullOrEmpty
+    }
+    It "Get FreeNas system Advanced" {
+
+        $query = Get-FreeNasSystemAdvanced
+        $query.Advanced_mode | Should -BeNullOrEmpty
+        $query.Advanced_Autotune | Should -BeNullOrEmpty
+        $query.MOTD_Banner | Should  -BeNullOrEmpty
+        $query.Advanced_Serial_Console | Should -BeNullOrEmpty
+        $query.Advanced_Serial_port | Should BeNullOrEmpty
+        $query.Advanced_Serial_speed | Should  BeNullOrEmpty
     }
 
 
