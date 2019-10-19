@@ -9,7 +9,13 @@
         [Parameter(Mandatory = $true)]
 
         [Alias("Freenas")]
-        $Server
+        $Server,
+        [Parameter(Mandatory = $false)]
+        [String]$Username,
+        [Parameter(Mandatory = $false)]
+        [SecureString]$Password,
+        [Parameter(Mandatory = $false)]
+        [PSCredential]$Credentials
     )
 
     Begin
@@ -26,68 +32,44 @@
     Process
     {
         $Script:SrvFreenas = $Server
+
+
+        #If there is a password (and a user), create a credentials
+        if ($Password) {
+            $Credentials = New-Object System.Management.Automation.PSCredential($Username, $Password)
+        }
+        #Not Credentials (and no password)
+        if ($NULL -eq $Credentials) {
+            $Credentials = Get-Credential -Message 'Please enter administrative credentials for your FreeNas'
+        }
+        $cred = $Credentials.username + ":" + $Credentials.GetNetworkCredential().Password
+        $base64 = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($cred))
         #headers, We need to have Content-type set to application/json...
-        $script:headers = @{ "Content-type" = "application/json" }
+        $script:headers = @{ Authorization = "Basic " + $base64; "Content-type" = "application/json" }
 
-        switch ($Script:Version)
-        {
-            '5'
-            {
-                Write-Verbose "Powershell $Script:Version is detected"
-                try { $result = Invoke-RestMethod -Uri $Uri  -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
-                catch
-                {
-                    Write-Error "Error when try to connect to  $Uri"
-                    return
-                }
-                $Script:Session = $Freenas_S
+        $uri = "http://${Server}/api/v1.0/system/version/"
 
-            }
-            '6'
-            {
-                Write-Verbose "Powershell $Script:Version is detected"
-                try { $result = Invoke-RestMethod -Uri $Uri -Authentication Basic -AllowUnencryptedAuthentication -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
-                catch
-                {
-                    Write-Error "Error when try to connect to  $Uri"
-                    return
-                }
-                $Script:Session = $Freenas_S
-            }
-            '7'
-            {
-                Write-Verbose "Powershell $Script:Version is detected"
-                try { $result = Invoke-RestMethod -Uri $Uri -Authentication Basic -AllowUnencryptedAuthentication -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
-                catch
-                {
-                    Write-Error "Error when try to connect to  $Uri"
-                    return
-                }
-                $Script:Session = $Freenas_S
-            }
+        try {
+            $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers
         }
-        try
-        {
-            Write-Verbose "try to check Storage to verify the connection"
-
-            $Uri = "http://$Script:SrvFreenas/api/v1.0/storage/disk/"
-
-            $result2 = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get
-        }
-
         catch
         {
-            Write-Warning "Error querying the NAS using URI $Uri"
-            return
+            Show-FreeNasException -Exception $_
+            throw "Unable to connect"
         }
+
+        if($null -eq $result.fullversion ) {
+            throw "Unable to get data"
+        }
+
+        Write-Host "Welcome on"$result.name"-"$result.fullversion""
+
+        $Script:Session = $Freenas_S
 
 
     }
     End
     {
-        if ($null -ne $result2)
-        {
-            Write-Host "Your are already connect to $Script:SrvFreenas "-ForegroundColor Cyan
-        }
+
     }
 }
