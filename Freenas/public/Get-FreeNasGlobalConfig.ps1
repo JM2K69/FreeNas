@@ -20,9 +20,7 @@ function Get-FreeNasGlobalConfig
     {
         $Uri = "api/v1.0/network/globalconfiguration/"
 
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
-
-        Catch { throw }
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
     }
     End

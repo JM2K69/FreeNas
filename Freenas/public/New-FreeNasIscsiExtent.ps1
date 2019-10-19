@@ -38,7 +38,6 @@
     Process {
         $Uri = "api/v1.0/services/iscsi/extent/"
 
-
         $Obj = [Ordered]@{
             iscsi_target_extent_type = $ExtenType
             iscsi_target_extent_name = $ExtentName
@@ -47,7 +46,7 @@
 
         }
 
-        invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
+        Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
     }
 

@@ -18,13 +18,7 @@
     {
         $Uri = "api/v1.0/system/ntpserver/"
 
-        try
-        {
-            $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
-
-        }
-
-        Catch { throw }
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
         $FreenasConf = New-Object System.Collections.ArrayList
         for ($i = 0; $i -lt $result.Count; $i++)

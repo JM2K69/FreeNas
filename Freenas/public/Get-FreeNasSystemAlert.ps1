@@ -21,13 +21,7 @@ function Get-FreeNasSystemAlert {
 
     $Uri = "api/v1.0/system/alert/"
 
-    try {
-        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
-    }
-    Catch {
-        Write-Warning "Error querying the NAS using URI $Uri"
-        return
-    }
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
     foreach ($Alert in $results) {
         [PSCustomObject]@{

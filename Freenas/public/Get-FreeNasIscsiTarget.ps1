@@ -19,9 +19,7 @@
     {
         $Uri = "api/v1.0/services/iscsi/target/"
 
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
-
-        Catch { throw }
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
         $FreenasIscsiTarget = New-Object System.Collections.ArrayList
         for ($i = 0; $i -lt $result.Count; $i++)

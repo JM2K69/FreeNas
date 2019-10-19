@@ -8,13 +8,8 @@
     }
 
     $Uri = "api/v1.0/services/iscsi/targetgroup/"
-    try {
-        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
-    }
-    Catch {
-        Write-Warning "Error querying the NAS using URI $Uri"
-        return
-    }
+
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
     foreach ($Target in $results) {
         [PSCustomObject]@{

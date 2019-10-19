@@ -2,7 +2,7 @@ function Get-FreeNasInterface
 {
     [CmdletBinding()]
     [Alias()]
-   
+
     Param
     ()
 
@@ -21,9 +21,7 @@ function Get-FreeNasInterface
     {
         $Uri = "api/v1.0/network/interface/"
 
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
-       
-        Catch { throw }
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
     }
     End
@@ -55,5 +53,5 @@ function Get-FreeNasInterface
             }
         }
         return $Global
-    }    
+    }
 }

@@ -19,13 +19,7 @@
     {
         $Uri = "api/v1.0/system/email/"
 
-        try
-        {
-            $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
-
-        }
-
-        Catch { throw }
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
         $FreeNasConf = New-Object System.Collections.ArrayList
 
