@@ -11,15 +11,12 @@ function Remove-FreeNasIscsiInitiator
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true { $Uri = "/api/v1.0/services/iscsi/authorizedinitiator/$Id/" }
-            $false { Break }
-        }
+
     }
     Process
     {
+
+        $Uri = "/api/v1.0/services/iscsi/authorizedinitiator/$Id/"
 
         if ($PSCmdlet.ShouldProcess("will be remove" , "The Authorized Initiator with the id $Id"))
         {

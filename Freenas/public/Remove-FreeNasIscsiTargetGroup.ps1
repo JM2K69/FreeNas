@@ -11,15 +11,12 @@ function Remove-FreeNasIscsiTargetGroup
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true { $Uri = "/api/v1.0/services/iscsi/targetgroup/$Id/" }
-            $false { Break }
-        }
+
     }
     Process
     {
+
+        $Uri = "/api/v1.0/services/iscsi/targetgroup/$Id/"
 
         if ($PSCmdlet.ShouldProcess("will be remove" , "The TargetGroup with the id $Id"))
         {

@@ -11,12 +11,6 @@ This Function permit ta find Update for your FreeNas Server
 function Get-FreeNasSystemUpdate {
     Param( )
 
-    Get-FreeNasStatus
-    switch ( $Script:status) {
-        $true { }
-        $false { Break }
-    }
-
     $Uri = "api/v1.0/system/update/check/"
 
     $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get

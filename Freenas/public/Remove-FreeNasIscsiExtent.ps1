@@ -11,15 +11,12 @@ function Remove-FreeNasIscsiExtent
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true { $Uri = "/api/v1.0/services/iscsi/extent/$Id/" }
-            $false { Break }
-        }
+
     }
     Process
     {
+
+        $Uri = "/api/v1.0/services/iscsi/extent/$Id/"
 
         if ($PSCmdlet.ShouldProcess("will be remove" , "The Extent with the id $Id"))
         {

@@ -3,16 +3,12 @@
     Param
     ()
 
-    Begin {
-        Get-FreeNasStatus
-        switch ( $Script:status) {
-            $true { }
-            $false { Break }
-        }
-
+    Begin
+    {
 
     }
-    Process {
+    Process
+    {
         $Conf_Iscsi = Get-FreenasIscsiConf
         $Extent_Iscsi = Get-FreenasIscsiExtent
         $Initiator_Iscsi = Get-FreenasIscsiInitiator

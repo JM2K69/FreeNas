@@ -9,12 +9,6 @@ Reset to the default factory your FreeNas server a reboot is necessary
 function Reset-FreeNasSystemFactory {
     Param( )
 
-    Get-FreeNasStatus
-    switch ( $Script:status) {
-        $true { }
-        $false { Break }
-    }
-
     $Uri = "api/v1.0/system/config/factory_restore/"
 
     $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Post

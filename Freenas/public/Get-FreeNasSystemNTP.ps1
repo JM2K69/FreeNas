@@ -6,12 +6,6 @@
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true { }
-            $false { Break }
-        }
 
     }
     Process

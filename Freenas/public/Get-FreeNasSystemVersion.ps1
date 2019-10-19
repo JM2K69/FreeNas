@@ -19,12 +19,6 @@ This function return inforamtions about your FreeNas server.
 function Get-FreeNasSystemVersion {
     Param( )
 
-    Get-FreeNasStatus
-    switch ( $Script:status) {
-        $true { }
-        $false { Break }
-    }
-
     $Uri = "api/v1.0/system/version/"
 
     $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get

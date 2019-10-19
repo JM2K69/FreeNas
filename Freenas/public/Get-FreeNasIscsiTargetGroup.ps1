@@ -1,12 +1,6 @@
 ﻿function Get-FreeNasIscsiTargetGroup {
     Param( )
 
-    Get-FreeNasStatus
-    switch ( $Script:status) {
-        $true { }
-        $false { Break }
-    }
-
     $Uri = "api/v1.0/services/iscsi/targetgroup/"
 
     $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get

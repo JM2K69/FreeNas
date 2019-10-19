@@ -11,15 +11,12 @@ function Remove-FreeNasIscsiAssociat2Extent
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true { $Uri = "/api/v1.0/services/iscsi/targettoextent/$Id/" }
-            $false { Break }
-        }
+
     }
     Process
     {
+
+        $Uri = "/api/v1.0/services/iscsi/extent/$Id/"
 
         if ($PSCmdlet.ShouldProcess("will be remove" , "The Association to Exent with the id $Id"))
         {
