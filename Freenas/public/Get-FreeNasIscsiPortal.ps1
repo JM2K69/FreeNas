@@ -17,10 +17,7 @@
     {
         $Uri = "api/v1.0/services/iscsi/portal/"
 
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
-
-        Catch { throw }
-
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
         $Obj = New-Object System.Collections.ArrayList
         $temp = New-Object System.Object

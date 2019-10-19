@@ -26,13 +26,8 @@ function Get-FreeNasSystemVersion {
     }
 
     $Uri = "api/v1.0/system/version/"
-    try {
-        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
-    }
-    Catch {
-        Write-Warning "Error querying the NAS using URI $Uri"
-        return
-    }
+
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
     foreach ($Info in $results) {
         [PSCustomObject]@{

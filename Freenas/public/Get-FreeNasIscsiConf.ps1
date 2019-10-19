@@ -17,9 +17,7 @@
     {
         $Uri = "api/v1.0/services/iscsi/globalconfiguration/"
 
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
-
-        Catch { throw }
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
     }
     End

@@ -18,9 +18,7 @@
     Process
     {
         $Uri = "api/v1.0/services/iscsi/extent/"
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
-
-        Catch { throw }
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
         $Extent = New-Object System.Collections.ArrayList
 

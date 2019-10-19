@@ -28,12 +28,10 @@
     {
         $Uri = "api/v1.0/storage/volume/$VolumeName/zvols/$ZvolName/"
 
-
         $Dedup = new-Object -TypeName PSObject
 
         $Dedup | add-member -name "dedup" -membertype NoteProperty -Value "on"
         $Dedup | add-member -name "force" -membertype NoteProperty -Value "true"
-
 
         $response = Invoke-FreeNasRestMethod -method Put -body $Dedup -Uri $Uri
 

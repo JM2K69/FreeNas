@@ -19,15 +19,8 @@ function Update-FreeNasSystem
     }
 
     $Uri = "api/v1.0/system/update/update/"
-    try
-    {
-        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Post
-    }
-    Catch
-    {
-        Write-Warning "Error querying the NAS using URI $Uri"
-        return
-    }
+
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Post
 
     return $results
 }

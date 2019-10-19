@@ -25,9 +25,7 @@
     {
         $Uri = "api/v1.0/storage/volume/$VolumeName/zvols/"
 
-        try { $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get }
-
-        Catch { throw }
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
     }
     End

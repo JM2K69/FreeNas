@@ -35,7 +35,6 @@
 
         $IscsiConf = new-Object -TypeName PSObject
 
-
         if ( $PsBoundParameters.ContainsKey('BaseName') )
         {
             $IscsiConf | add-member -name "iscsi_basename" -membertype NoteProperty -Value $BaseName

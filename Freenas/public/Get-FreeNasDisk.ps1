@@ -19,15 +19,8 @@
     }
 
     $Uri = "api/v1.0/storage/disk/"
-    try
-    {
-        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
-    }
-    Catch
-    {
-        Write-Warning "Error querying the NAS using URI $Uri"
-        return
-    }
+
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
     foreach ($disk in $results)
     {

@@ -35,8 +35,6 @@
 
         $Status | add-member -name "srv_enable" -membertype NoteProperty -Value $ServicesStatus
 
-
-
         $response = Invoke-FreeNasRestMethod -method Put -body $status -Uri $Uri
 
     }
