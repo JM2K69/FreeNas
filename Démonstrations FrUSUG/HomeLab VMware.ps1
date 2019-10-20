@@ -30,7 +30,7 @@ Get-FreeNasZvol -VolumeName data
 #region Configuration du partage ISCSI
 # recupération des Infos
 Get-FreeNasIscsiConf
-#creation du Configurtation Global avec un nom qui commence par iqn 
+#creation du Configurtation Global avec un nom qui commence par iqn
 Set-FreeNasIscsiConf -BaseName "iqn.2019-10.org.JM2K69.Pwsh" -pool_avail_threshold 75
 Get-FreeNasIscsiConf
 
@@ -71,7 +71,7 @@ Get-FreeNasIscsiExtent
 #region Association
 Get-FreeNasIscsiAssociat2Extent
 Get-FreeNasIscsiTarget
-New-FreeNasIscsiAssociat2Extent -TargetId 1 -ExtentId 1 
+New-FreeNasIscsiAssociat2Extent -TargetId 1 -ExtentId 1
 New-FreeNasIscsiAssociat2Extent -TargetId 2 -ExtentId 2
 New-FreeNasIscsiAssociat2Extent -TargetId 3 -ExtentId 3
 New-FreeNasIscsiAssociat2Extent -TargetId 4 -ExtentId 4
@@ -98,7 +98,7 @@ Get-FreeNasIscsiSummary
 
 #PowerCli ESXI
 Connect-VIServer -Server 10.0.10.30
-$vmhost = Get-VMHost 
+$vmhost = Get-VMHost
 $vmhost | New-VirtualSwitch -Name vSwitch2 -Nic vmnic2, vmnic3 -Mtu 9000
 $vmhost | New-VMHostNetworkAdapter -PortGroup iSCSI01 -VirtualSwitch vSwitch2 -IP 10.0.10.31 -SubnetMask 255.0.0.0 -Mtu 9000
 $VMhost | Get-VMHostStorage | Set-VMHostStorage -SoftwareIScsiEnabled $True
@@ -132,7 +132,7 @@ function Get-FreeEsxiLUN
     param(
         [Parameter(Position = 0, Mandatory = $true)]
         [System.String]$Esxihost
-    )    
+    )
     Begin
     {
         if (-not(Get-Module vmware.vimautomation.core))
@@ -149,10 +149,10 @@ function Get-FreeEsxiLUN
         foreach ($lun in $AllLUNs)
         {
             $Datastore = $Datastores | Where-Object { $_.extensiondata.info.vmfs.extent.Diskname -Match $lun.CanonicalName }
-            if ($Datastore.Name -eq $null)
+            if ($null -eq $Datastore.Name)
             {
-                $lun | Select-Object CanonicalName, CapacityGB, Vendor        
-            } 
+                $lun | Select-Object CanonicalName, CapacityGB, Vendor
+            }
         }
     }
     End { }
@@ -167,3 +167,14 @@ foreach ($LUNS in $FreeESXILUN)
 
     $VMhost | New-Datastore -Name $Name -Path $LUNS.CanonicalName -Vmfs -FileSystemVersion 6
 }
+<#Secure Http -> HTTPS
+
+New-FreeNasInternalCA -Name Internalca -CommonName "FreeNas" -City "San Jose" -State CA -Country US -Email example@ixysystem.com -Organization iXsystems -DigestAlgo SHA256 -Liftime 3650 -KeyLenght 2048
+Get-FreeNasInternalCA
+Get-FreeNasSetting
+New-FreeNasCertificate -Name Internalcert -CommonName "FreeNas" -City "San Jose" -State CA -Country US -Email example@ixysystem.com -Organization iXsystems -DigestAlgo SHA256 -Liftime 3650 -KeyLenght 2048 -Signedby 1
+Update-FreeNasSetting -Id 1 -GuiCertifiacteId 1 -GuiProtocol httphttps -Confirm
+Restart-FreeNasServer
+
+
+#>
