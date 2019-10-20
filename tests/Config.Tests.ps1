@@ -7,19 +7,19 @@
 #Requires -Modules @{ModuleName="FreeNas"; ModuleVersion="1.3.1" }
 
 $TestsPath = Split-Path $MyInvocation.MyCommand.Path
-
 $RootFolder = (get-item $TestsPath).Parent
-
 Push-Location -Path $RootFolder.FullName
-
 set-location -Path $RootFolder.FullName
-
 Write-Verbose "Importing module"
-
 import-module .\Freenas -Force
 
-$IpsrvFreenas = Read-Host "Enter the IPaddress for the Tests"
-Connect-FreeNasServer -Server $IpsrvFreenas
+Describe  "Connection" {
+
+    $IpsrvFreenas = Read-Host "Enter the IPaddress for the Tests"
+    $query = Connect-FreeNasServer -Server $IpsrvFreenas
+    $query | Should not be Throw
+
+}
 
 Describe  "Get Configuration" {
 
