@@ -10,14 +10,6 @@ function Get-FreeNasSystemAdvanced
 {
     Param( )
 
-    Get-FreeNasStatus
-    switch ( $Script:status)
-    {
-        $true { }
-        $false { Break }
-    }
-
-
     $Uri = "api/v1.0/system/advanced/"
 
     $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get

@@ -11,16 +11,12 @@ function Remove-FreeNasZvol
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true { $Uri = "/api/v1.0/storage/volume/$Id/" }
-            $false { Break }
-        }
 
     }
     Process
     {
+
+        $Uri = "/api/v1.0/storage/volume/$Id/"
 
         if ($PSCmdlet.ShouldProcess("will be remove" , "The volume with the id $Id"))
         {

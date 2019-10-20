@@ -27,6 +27,7 @@ function Invoke-FreeNasRestMethod
 
     Begin
     {
+
     }
 
     Process

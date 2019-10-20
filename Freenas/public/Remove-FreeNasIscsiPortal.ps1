@@ -11,16 +11,12 @@
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true { $Uri = "api/v1.0/services/iscsi/portal/$Id/" }
-            $false { Break }
-        }
 
     }
     Process
     {
+        $Uri = "api/v1.0/services/iscsi/portal/$Id/"
+
         if ($PSCmdlet.ShouldProcess("will be remove" , "The Portal with the id $Id"))
         {
             $response = Invoke-FreeNasRestMethod -method Delete -body $post -Uri $Uri

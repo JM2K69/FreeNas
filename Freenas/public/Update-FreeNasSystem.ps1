@@ -11,13 +11,6 @@ function Update-FreeNasSystem
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     Param( )
 
-    Get-FreeNasStatus
-    switch ( $Script:status)
-    {
-        $true { }
-        $false { Break }
-    }
-
     $Uri = "api/v1.0/system/update/update/"
 
     $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Post
