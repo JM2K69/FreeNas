@@ -1,5 +1,4 @@
-﻿function Connect-FreeNasServer
-{
+﻿function Connect-FreeNasServer {
     [CmdletBinding()]
     [Alias()]
     [OutputType([String])]
@@ -18,8 +17,7 @@
         [PSCredential]$Credentials
     )
 
-    Begin
-    {
+    Begin {
         Get-PowerShellVersion
         $global:SrvFreenas = ""
         $global:Session = ""
@@ -29,8 +27,7 @@
         Write-Verbose "The Server URI i set to $Uri"
 
     }
-    Process
-    {
+    Process {
         $Script:SrvFreenas = $Server
 
 
@@ -46,19 +43,19 @@
         $base64 = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($cred))
         #headers, We need to have Content-type set to application/json...
         $script:headers = @{ Authorization = "Basic " + $base64; "Content-type" = "application/json" }
+        $script:invokeParams = @{ UseBasicParsing = $true }
 
         $uri = "http://${Server}/api/v1.0/system/version/"
 
         try {
-            $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers
+            $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers @invokeParams
         }
-        catch
-        {
+        catch {
             Show-FreeNasException -Exception $_
             throw "Unable to connect"
         }
 
-        if($null -eq $result.fullversion ) {
+        if ($null -eq $result.fullversion ) {
             throw "Unable to get data"
         }
 
@@ -68,8 +65,7 @@
 
 
     }
-    End
-    {
+    End {
 
     }
 }
