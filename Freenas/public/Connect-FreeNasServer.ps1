@@ -14,7 +14,10 @@
         [Parameter(Mandatory = $false)]
         [SecureString]$Password,
         [Parameter(Mandatory = $false)]
-        [PSCredential]$Credentials
+        [PSCredential]$Credentials,
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, 65535)]
+        [int]$port
     )
 
     Begin {
@@ -45,7 +48,12 @@
         $script:headers = @{ Authorization = "Basic " + $base64; "Content-type" = "application/json" }
         $script:invokeParams = @{ UseBasicParsing = $true }
 
-        $uri = "http://${Server}/api/v1.0/system/version/"
+        if (!$port) {
+            $port = 80
+        }
+        $script:port = $port
+
+        $uri = "http://${Server}:{$port}/api/v1.0/system/version/"
 
         try {
             $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers @invokeParams
