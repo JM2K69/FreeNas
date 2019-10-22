@@ -43,20 +43,7 @@ function Invoke-FreeNasRestMethod
         $headers = $Script:Headers
         $invokeParams = $Script:invokeParams
 
-        switch ($Script:Secure)
-        {
-            Secure
-            {
-                $uri = "https://${Server}/${uri}"
-                $fullurl = $uri
-            }
-            NotSecure
-            {
-                $uri = "http://${Server}/${uri}"
-                $fullurl = $uri
-            }
-            Default { }
-        }
+        $fullurl = "http://${Server}:{$port}/${uri}"
 
         try
         {

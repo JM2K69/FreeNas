@@ -16,9 +16,9 @@
         [SecureString]$Password,
         [Parameter(Mandatory = $false)]
         [PSCredential]$Credentials,
-        [Parameter(Mandatory = $true)]
-        [ValidateSet("Secure", "NotSecure")]
-        [String]$Secure
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, 65535)]
+        [int]$port
     )
 
     Begin
@@ -52,23 +52,14 @@
         $script:headers = @{ Authorization = "Basic " + $base64; "Content-type" = "application/json" }
         $script:invokeParams = @{ UseBasicParsing = $true }
 
-        switch ($Secure)
-        {
-            Secure
-            {
-                $uri = "https://${Server}/api/v1.0/system/version/"
-                $Script:Secure = "Secure"
-            }
-            NotSecure
-            {
-                $uri = "http://${Server}/api/v1.0/system/version/"
-                $Script:Secure = "NotSecure"
-            }
-            Default { }
+        if (!$port) {
+            $port = 80
         }
+        $script:port = $port
 
-        try
-        {
+        $uri = "http://${Server}:{$port}/api/v1.0/system/version/"
+
+        try {
             $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers @invokeParams
         }
         catch
