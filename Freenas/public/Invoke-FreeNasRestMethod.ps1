@@ -1,5 +1,6 @@
 
-function Invoke-FreeNasRestMethod {
+function Invoke-FreeNasRestMethod
+{
 
     <#
       .SYNOPSIS
@@ -24,13 +25,16 @@ function Invoke-FreeNasRestMethod {
         [psobject]$body
     )
 
-    Begin {
+    Begin
+    {
 
     }
 
-    Process {
+    Process
+    {
 
-        if ($null -eq $Script:SrvFreenas) {
+        if ($null -eq $Script:SrvFreenas)
+        {
             Throw "Not Connected. Connect to the FreeNas with Connect-FreeNas"
         }
 
@@ -38,20 +42,36 @@ function Invoke-FreeNasRestMethod {
         $sessionvariable = $Script:Session
         $headers = $Script:Headers
         $invokeParams = $Script:invokeParams
-        $port = $Script:port
 
-        $fullurl = "http://${Server}:{$port}/${uri}"
+        switch ($Script:Secure)
+        {
+            Secure
+            {
+                $uri = "https://${Server}/${uri}"
+                $fullurl = $uri
+            }
+            NotSecure
+            {
+                $uri = "http://${Server}/${uri}"
+                $fullurl = $uri
+            }
+            Default { }
+        }
 
-        try {
-            if ($body) {
+        try
+        {
+            if ($body)
+            {
                 $response = Invoke-RestMethod $fullurl -Method $method -body ($body | ConvertTo-Json -Compress -Depth 3) -WebSession $sessionvariable -headers $headers @invokeParams
             }
-            else {
+            else
+            {
                 $response = Invoke-RestMethod $fullurl -Method $method -WebSession $sessionvariable -headers $headers @invokeParams
             }
         }
 
-        catch {
+        catch
+        {
             Show-FreeNasException $_
             throw "Unable to use FreeNAS API"
         }

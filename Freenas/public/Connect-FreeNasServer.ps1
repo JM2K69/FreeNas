@@ -1,4 +1,5 @@
-﻿function Connect-FreeNasServer {
+﻿function Connect-FreeNasServer
+{
     [CmdletBinding()]
     [Alias()]
     [OutputType([String])]
@@ -15,13 +16,13 @@
         [SecureString]$Password,
         [Parameter(Mandatory = $false)]
         [PSCredential]$Credentials,
-        [Parameter(Mandatory = $false)]
-        [ValidateRange(1, 65535)]
-        [int]$port
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("Secure", "NotSecure")]
+        [String]$Secure
     )
 
-    Begin {
-        Get-PowerShellVersion
+    Begin
+    {
         $global:SrvFreenas = ""
         $global:Session = ""
         $global:Header
@@ -30,16 +31,19 @@
         Write-Verbose "The Server URI i set to $Uri"
 
     }
-    Process {
+    Process
+    {
         $Script:SrvFreenas = $Server
 
 
         #If there is a password (and a user), create a credentials
-        if ($Password) {
+        if ($Password)
+        {
             $Credentials = New-Object System.Management.Automation.PSCredential($Username, $Password)
         }
         #Not Credentials (and no password)
-        if ($NULL -eq $Credentials) {
+        if ($NULL -eq $Credentials)
+        {
             $Credentials = Get-Credential -Message 'Please enter administrative credentials for your FreeNas'
         }
         $cred = $Credentials.username + ":" + $Credentials.GetNetworkCredential().Password
@@ -48,22 +52,33 @@
         $script:headers = @{ Authorization = "Basic " + $base64; "Content-type" = "application/json" }
         $script:invokeParams = @{ UseBasicParsing = $true }
 
-        if (!$port) {
-            $port = 80
+        switch ($Secure)
+        {
+            Secure
+            {
+                $uri = "https://${Server}/api/v1.0/system/version/"
+                $Script:Secure = "Secure"
+            }
+            NotSecure
+            {
+                $uri = "http://${Server}/api/v1.0/system/version/"
+                $Script:Secure = "NotSecure"
+            }
+            Default { }
         }
-        $script:port = $port
 
-        $uri = "http://${Server}:{$port}/api/v1.0/system/version/"
-
-        try {
+        try
+        {
             $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers @invokeParams
         }
-        catch {
+        catch
+        {
             Show-FreeNasException -Exception $_
             throw "Unable to connect"
         }
 
-        if ($null -eq $result.fullversion ) {
+        if ($null -eq $result.fullversion )
+        {
             throw "Unable to get data"
         }
 
@@ -73,7 +88,8 @@
 
 
     }
-    End {
+    End
+    {
 
     }
 }
