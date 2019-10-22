@@ -43,7 +43,7 @@ function Invoke-FreeNasRestMethod
         $headers = $Script:Headers
         $invokeParams = $Script:invokeParams
 
-        $fullurl = "http://${Server}:{$port}/${uri}"
+        $fullurl = "http://${Server}:${port}/${uri}"
 
         try
         {

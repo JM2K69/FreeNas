@@ -57,7 +57,7 @@
         }
         $script:port = $port
 
-        $uri = "http://${Server}:{$port}/api/v1.0/system/version/"
+        $uri = "http://${Server}:${port}/api/v1.0/system/version/"
 
         try {
             $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers @invokeParams
