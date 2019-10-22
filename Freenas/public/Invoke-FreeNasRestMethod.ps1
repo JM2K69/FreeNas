@@ -38,8 +38,9 @@ function Invoke-FreeNasRestMethod {
         $sessionvariable = $Script:Session
         $headers = $Script:Headers
         $invokeParams = $Script:invokeParams
+        $port = $Script:port
 
-        $fullurl = "http://${Server}/${uri}"
+        $fullurl = "http://${Server}:{$port}/${uri}"
 
         try {
             if ($body) {
