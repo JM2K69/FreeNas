@@ -17,6 +17,8 @@
         [Parameter(Mandatory = $false)]
         [PSCredential]$Credentials,
         [Parameter(Mandatory = $false)]
+        [switch]$httpOnly = $false,
+        [Parameter(Mandatory = $false)]
         [ValidateRange(1, 65535)]
         [int]$port
     )
@@ -52,12 +54,22 @@
         $script:headers = @{ Authorization = "Basic " + $base64; "Content-type" = "application/json" }
         $script:invokeParams = @{ UseBasicParsing = $true }
 
-        if (!$port) {
-            $port = 80
-        }
-        $script:port = $port
+        if ($httpOnly) {
+            if (!$port) {
+                $port = 80
+            }
 
-        $uri = "http://${Server}:${port}/api/v1.0/system/version/"
+            $uri = "http://${Server}:${port}/api/v1.0/system/version/"
+        }
+        else {
+            if (!$port) {
+                $port = 443
+            }
+            $uri = "https://${Server}:${port}/api/v1.0/system/version/"
+        }
+
+        $script:port = $port
+        $script:httpOnly = $httpOnly
 
         try {
             $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers @invokeParams
