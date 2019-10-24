@@ -35,7 +35,7 @@ function Invoke-FreeNasRestMethod
 
         if ($null -eq $Script:SrvFreenas)
         {
-            Throw "Not Connected. Connect to the FreeNas with Connect-FreeNas"
+            Throw "Not Connected. Connect to the FreeNas with Connect-FreeNasServer"
         }
 
         $Server = $Script:SrvFreenas
