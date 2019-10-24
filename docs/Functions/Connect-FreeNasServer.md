@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Connect-FreeNasServer [-Server] <Object> [[-Username] <String>] [[-Password] <SecureString>]
- [[-Credentials] <PSCredential>] [[-port] <Int32>] [<CommonParameters>]
+ [[-Credentials] <PSCredential>] [-httpOnly] [-SkipCertificateCheck] [[-port] <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -76,6 +76,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -SkipCertificateCheck
+{{Fill SkipCertificateCheck Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Nommé
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Username
 {{Fill Username Description}}
 
@@ -86,6 +101,21 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -httpOnly
+{{Fill httpOnly Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Nommé
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
