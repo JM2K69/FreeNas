@@ -35,15 +35,22 @@ function Invoke-FreeNasRestMethod
 
         if ($null -eq $Script:SrvFreenas)
         {
-            Throw "Not Connected. Connect to the FreeNas with Connect-FreeNas"
+            Throw "Not Connected. Connect to the FreeNas with Connect-FreeNasServer"
         }
 
         $Server = $Script:SrvFreenas
         $sessionvariable = $Script:Session
         $headers = $Script:Headers
         $invokeParams = $Script:invokeParams
+        $httpOnly = $Script:httpOnly
+        $port = $Script:port
 
-        $fullurl = "http://${Server}:${port}/${uri}"
+        if ($httpOnly) {
+            $fullurl = "http://${Server}:${port}/${uri}"
+        }
+        else {
+            $fullurl = "https://${Server}:${port}/${uri}"
+        }
 
         try
         {
