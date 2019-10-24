@@ -19,6 +19,8 @@
         [Parameter(Mandatory = $false)]
         [switch]$httpOnly = $false,
         [Parameter(Mandatory = $false)]
+        [switch]$SkipCertificateCheck = $false,
+        [Parameter(Mandatory = $false)]
         [ValidateRange(1, 65535)]
         [int]$port
     )
@@ -52,7 +54,12 @@
         $base64 = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($cred))
         #headers, We need to have Content-type set to application/json...
         $script:headers = @{ Authorization = "Basic " + $base64; "Content-type" = "application/json" }
-        $script:invokeParams = @{ UseBasicParsing = $true }
+        $script:invokeParams = @{ UseBasicParsing = $true; SkipCertificateCheck = $SkipCertificateCheck}
+
+        if ("Desktop" -eq $PSVersionTable.PsEdition) {
+            #Remove -SkipCertificateCheck from Invoke Parameter (not supported <= PS 5)
+            $invokeParams.remove("SkipCertificateCheck")
+        }
 
         if ($httpOnly) {
             if (!$port) {
@@ -65,10 +72,14 @@
             if (!$port) {
                 $port = 443
             }
-            #for PowerShell (<=) 5 (Desktop), Enable TLS 1.1, 1.2
+            #for PowerShell (<=) 5 (Desktop), Enable TLS 1.1, 1.2 and Disable SSL chain trust
             if ("Desktop" -eq $PSVersionTable.PsEdition) {
                 #Enable TLS 1.1 and 1.2
                 Set-FreeNasCipherSSL
+                if ($SkipCertificateCheck) {
+                    #Disable SSL chain trust...
+                    Set-FreeNasuntrustedSSL
+                }
 
             }
             $uri = "https://${Server}:${port}/api/v1.0/system/version/"
