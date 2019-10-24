@@ -172,9 +172,12 @@ foreach ($LUNS in $FreeESXILUN)
 New-FreeNasInternalCA -Name Internalca -CommonName "FreeNas" -City "San Jose" -State CA -Country US -Email example@ixysystem.com -Organization iXsystems -DigestAlgo SHA256 -Liftime 3650 -KeyLenght 2048
 Get-FreeNasInternalCA
 Get-FreeNasSetting
-New-FreeNasCertificate -Name Internalcert -CommonName "FreeNas" -City "San Jose" -State CA -Country US -Email example@ixysystem.com -Organization iXsystems -DigestAlgo SHA256 -Liftime 3650 -KeyLenght 2048 -Signedby 1
+New-FreeNasCertificate -Name ID2 -CommonName "FreeNas" -City "San Jose" -State CA -Country US -Email example@ixysystem.com -Organization iXsystems -DigestAlgo SHA256 -Liftime 3650 -KeyLenght 2048 -Signedby 2
 Update-FreeNasSetting -Id 1 -GuiCertifiacteId 1 -GuiProtocol httphttps -Confirm
 Restart-FreeNasServer
 
+New-FreeNasInternalCA -Name Essai -CommonName demo -City "New York" `
+-State "US" -Country PA -Email "toto@Gmail.com" -Organization "Demo" `
+-DigestAlgo SHA256 -Liftime 3650 -KeyLenght 2048
 
 #>

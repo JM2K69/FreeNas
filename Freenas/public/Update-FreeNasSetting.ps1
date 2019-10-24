@@ -35,7 +35,7 @@
         [String]$Directoryservices,
 
         [Parameter (Mandatory = $false)]
-        [ipaddress]$GuiAddress = "0.0.0.0",
+        [String]$GuiAddress,
 
         [Parameter (Mandatory = $false)]
         [Int]$GuiCertifiacteId

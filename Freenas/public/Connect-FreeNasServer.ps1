@@ -1,4 +1,15 @@
-﻿function Connect-FreeNasServer
+﻿<#
+      .SYNOPSIS
+      Connect FreeNas Server it use to connect to your FreeNas Server or TrueNas
+      .DESCRIPTION
+      Connect FreeNas Server it use to connect to your FreeNas Server or TrueNas
+      .EXAMPLE
+      Connect-FreeNasServer -Server 10.0.10.0 -httpOnly
+      .EXAMPLE
+      Connect-FreeNasServer -Server 10.0.10.0 -SkipCertificateCheck $true
+
+    #>
+function Connect-FreeNasServer
 {
     [CmdletBinding()]
     [Alias()]
@@ -54,29 +65,39 @@
         $base64 = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($cred))
         #headers, We need to have Content-type set to application/json...
         $script:headers = @{ Authorization = "Basic " + $base64; "Content-type" = "application/json" }
-        $script:invokeParams = @{ UseBasicParsing = $true; SkipCertificateCheck = $SkipCertificateCheck}
+        $script:invokeParams = @{ UseBasicParsing = $true; SkipCertificateCheck = $SkipCertificateCheck }
 
-        if ("Desktop" -eq $PSVersionTable.PsEdition) {
+        if ("Desktop" -eq $PSVersionTable.PsEdition)
+        {
             #Remove -SkipCertificateCheck from Invoke Parameter (not supported <= PS 5)
             $invokeParams.remove("SkipCertificateCheck")
         }
 
-        if ($httpOnly) {
-            if (!$port) {
+        if ($httpOnly)
+        {
+            if (!$port)
+            {
                 $port = 80
             }
 
             $uri = "http://${Server}:${port}/api/v1.0/system/version/"
         }
-        else {
-            if (!$port) {
+        else
+        {
+            if (!$port)
+            {
                 $port = 443
             }
             #for PowerShell (<=) 5 (Desktop), Enable TLS 1.1, 1.2 and Disable SSL chain trust
-            if ("Desktop" -eq $PSVersionTable.PsEdition) {
+            if ("Desktop" -eq $PSVersionTable.PsEdition)
+            {
+                Write-Verbose "Desktop Version try to Enable TLS 1.1 and 1.2"
                 #Enable TLS 1.1 and 1.2
                 Set-FreeNasCipherSSL
-                if ($SkipCertificateCheck) {
+                if ($SkipCertificateCheck)
+                {
+                    Write-Verbose "Disable SSL chain trust"
+
                     #Disable SSL chain trust...
                     Set-FreeNasuntrustedSSL
                 }
@@ -88,7 +109,8 @@
         $script:port = $port
         $script:httpOnly = $httpOnly
 
-        try {
+        try
+        {
             $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers @invokeParams
         }
         catch

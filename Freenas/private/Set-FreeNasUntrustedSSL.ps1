@@ -1,4 +1,5 @@
-function Set-FreeNasUntrustedSSL {
+function Set-FreeNasUntrustedSSL
+{
 
     # Hack for allowing untrusted SSL certs with https connections
     Add-Type -TypeDefinition @"
