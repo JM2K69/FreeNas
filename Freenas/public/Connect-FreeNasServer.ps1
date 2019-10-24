@@ -65,6 +65,12 @@
             if (!$port) {
                 $port = 443
             }
+            #for PowerShell (<=) 5 (Desktop), Enable TLS 1.1, 1.2
+            if ("Desktop" -eq $PSVersionTable.PsEdition) {
+                #Enable TLS 1.1 and 1.2
+                Set-FreeNasCipherSSL
+
+            }
             $uri = "https://${Server}:${port}/api/v1.0/system/version/"
         }
 
