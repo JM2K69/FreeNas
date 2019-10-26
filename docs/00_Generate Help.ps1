@@ -14,4 +14,5 @@ Write-Verbose "Importing modules"
 import-module .\Freenas -Force
 import-module platyPS
 
-New-MarkdownHelp -Module FreeNas -OutputFolder $TestsPath\Functions
+#New-MarkdownHelp -Module FreeNas -OutputFolder $TestsPath\Functions
+New-MarkdownHelp -Module Freenas -WithModulePage -OutputFolder $TestsPath\Functions
