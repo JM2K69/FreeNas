@@ -50,8 +50,6 @@ function Connect-FreeNasServer
 
     Begin
     {
-        $global:SrvFreenas = ""
-        $global:Session = ""
         $Uri = "http://$Server/api/v1.0"
         New-banner -Text "FreeNas 2.0" -Online
         Write-Verbose "The Server URI i set to $Uri"
