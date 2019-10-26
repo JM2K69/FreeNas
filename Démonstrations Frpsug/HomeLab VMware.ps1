@@ -1,12 +1,12 @@
 ﻿#region Connection au serveur
-Import-Module FreeNas.psm1 -Force
+Import-Module C:\Users\JM2K69\Documents\GitHub\FreeNas\Freenas\FreeNas.psm1 -Force
 Connect-FreeNasServer -Server 192.168.0.25
 
 #endregion Connection au serveur
 
 #region Création de Volumes
 
-Get-FreeNasDisk 
+Get-FreeNasDisk
 New-FreeNasVolume -VolumeName data -Vdevtype stripe -NbDisks 2 -StartDisksNB 0
 New-FreeNasVolume -VolumeName data2 -Vdevtype raidz -NbDisks 3 -StartDisksNB 2
 Get-FreeNasVolume
@@ -30,7 +30,7 @@ Get-FreeNasZvol -VolumeName data
 #region Configuration du partage ISCSI
 # recupération des Infos
 Get-FreeNasIscsiConf
-#creation du Configurtation Global avec un nom qui commence par iqn 
+#creation du Configurtation Global avec un nom qui commence par iqn
 Set-FreeNasIscsiConf -BaseName "iqn.2019-10.org.JM2K69.Pwsh" -pool_avail_threshold 75
 Get-FreeNasIscsiConf
 
@@ -90,15 +90,15 @@ New-FreeNasIscsiTargetGroup -TargetId 6 -TargetPortalGroup 1
 #endregion Association
 
 #endregion Configuration du partage ISCSI
-Get-FreeNasService | Where-Object {$_.srv_service -eq "iscsitarget"}
+Get-FreeNasService | Where-Object { $_.srv_service -eq "iscsitarget" }
 Set-FreeNasService -Services iscsitarget -ServicesStatus True
-Get-FreeNasService | Where-Object {$_.srv_service -eq "iscsitarget"}
+Get-FreeNasService | Where-Object { $_.srv_service -eq "iscsitarget" }
 Get-FreeNasIscsiSummary
 #Region
 
 #PowerCli ESXI
 Connect-VIServer -Server 10.0.10.30
-$vmhost = Get-VMHost 
+$vmhost = Get-VMHost
 $vmhost | New-VirtualSwitch -Name vSwitch2 -Nic vmnic2, vmnic3 -Mtu 9000
 $vmhost | New-VMHostNetworkAdapter -PortGroup iSCSI01 -VirtualSwitch vSwitch2 -IP 10.0.10.31 -SubnetMask 255.0.0.0 -Mtu 9000
 $VMhost | Get-VMHostStorage | Set-VMHostStorage -SoftwareIScsiEnabled $True
@@ -132,7 +132,7 @@ function Get-FreeEsxiLUN
     param(
         [Parameter(Position = 0, Mandatory = $true)]
         [System.String]$Esxihost
-    )    
+    )
     Begin
     {
         if (-not(Get-Module vmware.vimautomation.core))
@@ -148,22 +148,36 @@ function Get-FreeEsxiLUN
         $Datastores = $VMhost | Get-Datastore
         foreach ($lun in $AllLUNs)
         {
-            $Datastore = $Datastores | Where-Object {$_.extensiondata.info.vmfs.extent.Diskname -Match $lun.CanonicalName}
-            if ($Datastore.Name -eq $null)
+            $Datastore = $Datastores | Where-Object { $_.extensiondata.info.vmfs.extent.Diskname -Match $lun.CanonicalName }
+            if ($null -eq $Datastore.Name)
             {
-                $lun | Select-Object CanonicalName, CapacityGB, Vendor        
-            } 
+                $lun | Select-Object CanonicalName, CapacityGB, Vendor
+            }
         }
     }
-    End {}
+    End { }
 }
-$FreeESXILUN = Get-FreeEsxiLUN -Esxihost $vmhost |Select-Object -Property CanonicalName, CapacityGB, Vendor | where {$_.Vendor -eq "FreeNAS"}
+$FreeESXILUN = Get-FreeEsxiLUN -Esxihost $vmhost | Select-Object -Property CanonicalName, CapacityGB, Vendor | where { $_.Vendor -eq "FreeNAS" }
 
 foreach ($LUNS in $FreeESXILUN)
 {
 
-    $random_string = -join ((65..90) + (97..122) | Get-Random -Count 5 | % {[char]$_})
+    $random_string = -join ((65..90) + (97..122) | Get-Random -Count 5 | % { [char]$_ })
     $Name = "LUN_" + "$random_string" + "_" + $LUNS.CapacityGB
 
     $VMhost | New-Datastore -Name $Name -Path $LUNS.CanonicalName -Vmfs -FileSystemVersion 6
 }
+<#Secure Http -> HTTPS
+
+New-FreeNasInternalCA -Name Internalca -CommonName "FreeNas" -City "San Jose" -State CA -Country US -Email example@ixysystem.com -Organization iXsystems -DigestAlgo SHA256 -Liftime 3650 -KeyLenght 2048
+Get-FreeNasInternalCA
+Get-FreeNasSetting
+New-FreeNasCertificate -Name ID2 -CommonName "FreeNas" -City "San Jose" -State CA -Country US -Email example@ixysystem.com -Organization iXsystems -DigestAlgo SHA256 -Liftime 3650 -KeyLenght 2048 -Signedby 2
+Update-FreeNasSetting -Id 1 -GuiCertifiacteId 1 -GuiProtocol httphttps -Confirm
+Restart-FreeNasServer
+
+New-FreeNasInternalCA -Name Essai -CommonName demo -City "New York" `
+-State "US" -Country PA -Email "toto@Gmail.com" -Organization "Demo" `
+-DigestAlgo SHA256 -Liftime 3650 -KeyLenght 2048
+
+#>
