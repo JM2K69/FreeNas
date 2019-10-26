@@ -2,26 +2,11 @@
 {
     Param( )
 
-    Get-FreeNasStatus
-    switch ( $Script:status)
-    {
-        $true {  }
-        $false {Break}
-    }
+    $Uri = "api/v1.0/services/iscsi/targetgroup/"
 
-    $Uri = "http://$Script:SrvFreenas/api/v1.0/services/iscsi/targetgroup/"
-    try
-    {
-        $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get
-    }
-    Catch
-    {
-        Write-Warning "Error querying the NAS using URI $Uri"
-        return
-    }
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
-    foreach ($Target in $results)
-    {
+    foreach ($Target in $results) {
         [PSCustomObject]@{
             Id                     = ($Target.iscsi_target)
             Target_Auth_Group      = ($Target.iscsi_target_authgroup)

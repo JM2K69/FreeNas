@@ -29,19 +29,11 @@
     Begin
     {
 
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
-        }
-
     }
 
     Process
     {
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/extent/"
-
 
         $Obj = [Ordered]@{
             iscsi_target_extent_type = $ExtenType
@@ -51,8 +43,7 @@
 
         }
 
-        $post = $Obj |convertto-json 
-        invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
     }
 

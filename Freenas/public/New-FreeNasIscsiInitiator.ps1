@@ -17,22 +17,12 @@
     )
 
 
-    Begin
-    {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
-        }
-
+    Begin {
 
     }
     Process
     {
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/authorizedinitiator/"
-
-
 
         $Obj = [Ordered]@{
             iscsi_target_initiator_initiators   = $AuthInitiators
@@ -41,10 +31,11 @@
         
         $post = $Obj |ConvertTo-Json
 
-        $response = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
-
+        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
     }
     End
-    {}
+    {
+
+    }
 }

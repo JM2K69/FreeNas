@@ -13,30 +13,13 @@
 
     Begin
     {
-        Get-FreeNasStatus
-        Write-Verbose "Test if you are connect to server FreeNas"
-        switch ( $Script:status)
-        {
-            $true 
-            { 
-                Write-Verbose "Success"
-            }
-            $false 
-            {
-                Write-Error "You are not connected to a FreeNas Server"
-                return
-            }
-        }
-    
 
     }
     Process
     {
         $Uri = "http://$Script:SrvFreenas/api/v1.0/services/iscsi/targettoextent/"
 
-        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get }
-
-        Catch {}
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
         switch ($Output)
         {

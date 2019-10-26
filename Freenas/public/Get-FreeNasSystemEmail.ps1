@@ -6,26 +6,13 @@
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
-        }
-
 
     }
     Process
     {
         $Uri = "http://$script:SrvFreenas/api/v1.0/system/email/"
 
-        try
-        { 
-            $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get
-
-        }
-
-        Catch {}
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
         $FreeNasConf = New-Object System.Collections.ArrayList
         

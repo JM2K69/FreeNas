@@ -1,4 +1,27 @@
-﻿function Connect-FreeNasServer
+﻿<#
+      .SYNOPSIS
+      Connect FreeNas Server it use to connect to your FreeNas Server or TrueNas
+      .DESCRIPTION
+      Connect FreeNas Server it use to connect to your FreeNas Server or TrueNas
+      .EXAMPLE
+      Connection not secure on Https protocol:
+
+      PS C:\>Connect-FreeNasServer -Server 10.0.10.0 -httpOnly
+      Welcome on FreeNAS - FreeNAS-11.2-U6 (5acc1dec66)
+
+      .EXAMPLE
+      Connection with Https by default if you have a self signed certificate use the parameter SkipCertificateCheck
+
+      PS C:\>Connect-FreeNasServer -Server 10.0.10.0 -SkipCertificateCheck $true
+      Welcome on FreeNAS - FreeNAS-11.2-U6 (5acc1dec66)
+
+      .NOTES
+      By default the connection use the secure method to interact with FreeNAs or TrueNas server
+
+      .FUNCTIONALITY
+      Use this command at the begining for established the connection to your FreeNas or TrueNas server
+      #>
+function Connect-FreeNasServer
 {
     [CmdletBinding()]
     [Alias()]
@@ -8,17 +31,29 @@
         # Description d’aide Freenas
         [Parameter(Mandatory = $true)]
 
-        [Alias("Freenas")] 
-        $Server
+        [Alias("Freenas")]
+        $Server,
+        [Parameter(Mandatory = $false)]
+        [String]$Username,
+        [Parameter(Mandatory = $false)]
+        [SecureString]$Password,
+        [Parameter(Mandatory = $false)]
+        [PSCredential]$Credentials,
+        [Parameter(Mandatory = $false)]
+        [switch]$httpOnly = $false,
+        [Parameter(Mandatory = $false)]
+        [switch]$SkipCertificateCheck = $false,
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, 65535)]
+        [int]$port
     )
 
     Begin
     {
-        Get-PowerShellVersion
         $global:SrvFreenas = ""
         $global:Session = ""
         $Uri = "http://$Server/api/v1.0"
-        New-banner -Text "FreeNas v1.3.1" -FontName contessa
+        New-banner -Text "FreeNas dev" -Online
         Write-Verbose "The Server URI i set to $Uri"
 
     }
@@ -26,54 +61,88 @@
     {
         $Script:SrvFreenas = $Server
 
-        switch ($Script:Version)
+
+        #If there is a password (and a user), create a credentials
+        if ($Password)
         {
-            '5'
+            $Credentials = New-Object System.Management.Automation.PSCredential($Username, $Password)
+        }
+        #Not Credentials (and no password)
+        if ($NULL -eq $Credentials)
+        {
+            $Credentials = Get-Credential -Message 'Please enter administrative credentials for your FreeNas'
+        }
+        $cred = $Credentials.username + ":" + $Credentials.GetNetworkCredential().Password
+        $base64 = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($cred))
+        #headers, We need to have Content-type set to application/json...
+        $script:headers = @{ Authorization = "Basic " + $base64; "Content-type" = "application/json" }
+        $script:invokeParams = @{ UseBasicParsing = $true; SkipCertificateCheck = $SkipCertificateCheck }
+
+        if ("Desktop" -eq $PSVersionTable.PsEdition)
+        {
+            #Remove -SkipCertificateCheck from Invoke Parameter (not supported <= PS 5)
+            $invokeParams.remove("SkipCertificateCheck")
+        }
+
+        if ($httpOnly)
+        {
+            if (!$port)
             {
-                Write-Verbose "Powershell $Script:Version is detected"
-                try { $result = Invoke-RestMethod -Uri $Uri  -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
-                catch
+                $port = 80
+            }
+
+            $uri = "http://${Server}:${port}/api/v1.0/system/version/"
+        }
+        else
+        {
+            if (!$port)
+            {
+                $port = 443
+            }
+            #for PowerShell (<=) 5 (Desktop), Enable TLS 1.1, 1.2 and Disable SSL chain trust
+            if ("Desktop" -eq $PSVersionTable.PsEdition)
+            {
+                Write-Verbose "Desktop Version try to Enable TLS 1.1 and 1.2"
+                #Enable TLS 1.1 and 1.2
+                Set-FreeNasCipherSSL
+                if ($SkipCertificateCheck)
                 {
-                    Write-Error "Error when try to connect to  $Uri"
-                    return
+                    Write-Verbose "Disable SSL chain trust"
+
+                    #Disable SSL chain trust...
+                    Set-FreeNasuntrustedSSL
                 }
-                $Script:Session = $Freenas_S
 
             }
-            '6'
-            {
-                Write-Verbose "Powershell $Script:Version is detected"
-                try { $result = Invoke-RestMethod -Uri $Uri -Authentication Basic -AllowUnencryptedAuthentication -Method Get -SessionVariable Freenas_S -Credential (Get-Credential) }
-                catch
-                {
-                    Write-Error "Error when try to connect to  $Uri"
-                    return
-                }
-                $Script:Session = $Freenas_S
-            }
+            $uri = "https://${Server}:${port}/api/v1.0/system/version/"
         }
+
+        $script:port = $port
+        $script:httpOnly = $httpOnly
+
         try
         {
-            Write-Verbose "try to check Storage to verify the connection"
-
-            $Uri = "http://$Script:SrvFreenas/api/v1.0/storage/disk/"
-
-            $result2 = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get 
+            $result = Invoke-RestMethod -Uri $uri -Method Get -SessionVariable Freenas_S -headers $headers @invokeParams
         }
-
         catch
-        { 
-            Write-Warning "Error querying the NAS using URI $Uri"
-            return
+        {
+            Show-FreeNasException -Exception $_
+            throw "Unable to connect"
         }
+
+        if ($null -eq $result.fullversion )
+        {
+            throw "Unable to get data"
+        }
+
+        Write-Host "Welcome on"$result.name"-"$result.fullversion""
+
+        $Script:Session = $Freenas_S
 
 
     }
     End
     {
-        if ($null -eq $result2 )
-        {
-            Write-Host "Your are already connect to $Script:SrvFreenas "-ForegroundColor Cyan
-        }
+
     }
 }

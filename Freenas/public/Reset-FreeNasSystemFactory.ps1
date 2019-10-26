@@ -10,23 +10,9 @@ function Reset-FreeNasSystemFactory
 {
     Param( )
 
-    Get-FreeNasStatus
-    switch ( $Script:status)
-    {
-        $true {  }
-        $false {Break}
-    }
+    $Uri = "api/v1.0/system/config/factory_restore/"
 
-    $Uri = "http://$Script:SrvFreenas/api/v1.0/system/config/factory_restore/"
-    try
-    {
-        $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Post
-    }
-    Catch
-    {
-        Write-Warning "Error querying the NAS using URI $Uri"
-        return
-    }
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Post
 
     $results
 }

@@ -1,5 +1,5 @@
 #region Connection au serveur
-Import-Module C:\Users\Jay\Documents\GitHub\FreeNas\Freenas\FreeNas.psm1 -Force
+Import-Module C:\Git\FreeNas\Freenas\FreeNas.psm1 -Force
 Connect-FreeNasServer -Server 10.0.10.0
 
 #endregion Connection au serveur
@@ -79,16 +79,16 @@ New-FreeNasIscsiTargetGroup -TargetId 4 -TargetPortalGroup 1
 
 
 #endregion Configuration du partage ISCSI
-Get-FreeNasService | Where-Object {$_.srv_service -eq "iscsitarget"}
+Get-FreeNasService | Where-Object { $_.srv_service -eq "iscsitarget" }
 Set-FreeNasService -Services iscsitarget -ServicesStatus True
-Get-FreeNasService | Where-Object {$_.srv_service -eq "iscsitarget"}
+Get-FreeNasService | Where-Object { $_.srv_service -eq "iscsitarget" }
 Get-FreeNasIscsiSummary
 #Region
 
 #PowerCli ESXI
 Connect-VIServer -Server 10.0.10.30
 $vmhost = Get-VMHost
-$vmhost | Get-VMHostNetworkAdapter -Physical |  Select-Object Name
+$vmhost | Get-VMHostNetworkAdapter -Physical | Select-Object Name
 $vmhost | Get-VirtualSwitch | Select-Object  Name, Nic
 
 $vmhost | New-VirtualSwitch -Name vSwitch2 -Nic vmnic2, vmnic3 -Mtu 9000
@@ -99,7 +99,7 @@ $vmhost | New-VMHostNetworkAdapter -PortGroup iSCSI02 -VirtualSwitch vSwitch2 -I
 $VMhost | Get-VMHostStorage | Set-VMHostStorage -SoftwareIScsiEnabled $True
 $VMhost | Get-VMHostHba -Type iScsi | Select-Object Name, Status, IScsiName
 $VMhost | Get-VMHostHba -Type iScsi | New-IScsiHbaTarget -Address 10.0.10.0
-$VMhost | Get-VMHostNetworkAdapter -VMKernel | ? {$_.PortGroupName -match 'iSCSI'} | select Devicename
+$VMhost | Get-VMHostNetworkAdapter -VMKernel | ? { $_.PortGroupName -match 'iSCSI' } | select Devicename
 $VMHost | Get-VMHostHba -Type IScsi | Select Device
 $Hba = $vmhost | Get-VMHostHba -Type iScsi
 New-IScsiHbaTarget -IScsiHba $Hba -Address 10.0.10.0
@@ -147,21 +147,21 @@ function Get-FreeEsxiLUN
         $Datastores = $VMhost | Get-Datastore
         foreach ($lun in $AllLUNs)
         {
-            $Datastore = $Datastores | Where-Object {$_.extensiondata.info.vmfs.extent.Diskname -Match $lun.CanonicalName}
+            $Datastore = $Datastores | Where-Object { $_.extensiondata.info.vmfs.extent.Diskname -Match $lun.CanonicalName }
             if ($Datastore.Name -eq $null)
             {
                 $lun | Select-Object CanonicalName, CapacityGB, Vendor        
             } 
         }
     }
-    End {}
+    End { }
 }
-$FreeESXILUN = Get-FreeEsxiLUN -Esxihost $vmhost |Select-Object -Property CanonicalName, CapacityGB, Vendor | where {$_.Vendor -eq "FreeNAS"}
+$FreeESXILUN = Get-FreeEsxiLUN -Esxihost $vmhost | Select-Object -Property CanonicalName, CapacityGB, Vendor | where { $_.Vendor -eq "FreeNAS" }
 
 foreach ($LUNS in $FreeESXILUN)
 {
 
-    $random_string = -join ((65..90) + (97..122) | Get-Random -Count 5 | % {[char]$_})
+    $random_string = -join ((65..90) + (97..122) | Get-Random -Count 5 | % { [char]$_ })
     $Name = "LUN_" + "$random_string" + "_" + $LUNS.CapacityGB
 
     $VMhost | New-Datastore -Name $Name -Path $LUNS.CanonicalName -Vmfs -FileSystemVersion 6

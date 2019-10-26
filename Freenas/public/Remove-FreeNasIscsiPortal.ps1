@@ -1,45 +1,29 @@
 ﻿function Remove-FreeNasIscsiPortal
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     [Alias()]
     Param
     (
         [Parameter (Mandatory = $true)]
-        [Int]$Id,
-
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("False", "True")]
-        [string]$Confirm
-
+        [Int]$Id
     )
 
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/portal/$Id/"  }
-            $false {Break}
-        }
-
-
-      
 
     }
     Process
     {
-        switch ($Confirm)
+        $Uri = "api/v1.0/services/iscsi/portal/$Id/"
+
+        if ($PSCmdlet.ShouldProcess("will be remove" , "The Portal with the id $Id"))
         {
-            'True' { $response = invoke-RestMethod -method Delete -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"}
-            'False' { Write-Host 'The operation is aborted' -ForegroundColor Red}
+            $response = Invoke-FreeNasRestMethod -method Delete -body $post -Uri $Uri
         }
-
-        
-
     }
     End
     {
-             
+
     }
 }

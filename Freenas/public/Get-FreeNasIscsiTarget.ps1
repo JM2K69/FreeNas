@@ -6,22 +6,13 @@
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
-        }
-
 
     }
     Process
     {
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/target/"
 
-        try { $result = Invoke-RestMethod -Uri $Uri -WebSession $script:Session -Method Get }
-
-        Catch {}
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
         $FreenasIscsiTarget = New-Object System.Collections.ArrayList
         for ($i = 0; $i -lt $result.Count; $i++)

@@ -20,15 +20,7 @@
     )
 
 
-    Begin
-    {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
-        }
-
+    Begin {
 
     }
     Process
@@ -54,5 +46,7 @@
 
     }
     End
-    {}
+    {
+
+    }
 }

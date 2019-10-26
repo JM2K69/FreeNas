@@ -4,7 +4,7 @@ With This Module we can interact with Freenas and TrueNas System
 
 ## Getting Started
 
-Install from the PSGallery 
+Install from the PSGallery
 
     Install-Module Freenas
     Import-Module Freenas

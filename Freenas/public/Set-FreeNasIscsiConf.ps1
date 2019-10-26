@@ -21,12 +21,6 @@
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
-        }
 
     }
     Process
@@ -34,7 +28,6 @@
         $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/globalconfiguration/"
 
         $IscsiConf = new-Object -TypeName PSObject
-
 
         if ( $PsBoundParameters.ContainsKey('BaseName') )
         {

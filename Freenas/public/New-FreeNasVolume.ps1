@@ -31,13 +31,6 @@
     Begin
     {
 
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
-        }
-
     }
 
     Process
@@ -50,6 +43,8 @@
         $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/"
 
 
+        $Uri = "api/v1.0/storage/volume/"
+
         $Obj = [Ordered]@{
             volume_name = $VolumeName
             layout      = @(@{
@@ -59,6 +54,7 @@
            
         }
 
+        $response = Invoke-FreeNasRestMethod -Method Post -body $Obj -Uri $uri
 
         $post = $Obj |convertto-json -Depth 3
 

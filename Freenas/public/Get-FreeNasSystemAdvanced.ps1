@@ -10,24 +10,9 @@ function Get-FreeNasSystemAdvanced
 {
     Param( )
 
-    Get-FreeNasStatus
-    switch ( $Script:status)
-    {
-        $true {  }
-        $false {Break}
-    }
-    
+    $Uri = "api/v1.0/system/advanced/"
 
-    $Uri = "http://$Script:SrvFreenas/api/v1.0/system/advanced/"
-    try
-    {
-        $results = Invoke-RestMethod -Uri $Uri -WebSession $Script:Session -Method Get
-    }
-    Catch
-    {
-        Write-Warning "Error querying the NAS using URI $Uri"
-        return
-    }
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
     foreach ($Info in $results)
     {

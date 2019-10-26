@@ -19,12 +19,6 @@
 
     Begin
     {
-        Get-FreeNasStatus
-        switch ( $Script:status)
-        {
-            $true {  }
-            $false {Break}
-        }
 
     }
     Process
@@ -35,10 +29,7 @@
 
         $Status | add-member -name "srv_enable" -membertype NoteProperty -Value $ServicesStatus
 
-
-        $post = $Status |ConvertTo-Json
-
-        $response = invoke-RestMethod -method Put -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
+        $response = Invoke-FreeNasRestMethod -method Put -body $status -Uri $Uri
 
     }
     End
