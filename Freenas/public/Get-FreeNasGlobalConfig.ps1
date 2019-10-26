@@ -1,3 +1,27 @@
+<#
+      .SYNOPSIS
+      This function return the global configuration for your FreeNas Server
+      .DESCRIPTION
+      This function return the global configuration for your FreeNas Server
+      .EXAMPLE
+        PS C:\> Get-FreeNasGlobalConfig
+
+        Id          : 1
+        Domain      : local
+        Gateway     : 10.255.255.254
+        Hostname    : freenas
+        Nameserver1 : 1.1.1.1
+        Nameserver2 : 8.8.8.8
+        Nameserver3 :
+        Httpproxy   :
+
+        .NOTES
+      This command return the global configuration for your FreeNas or TrueNas server
+
+      .FUNCTIONALITY
+      Use this command when you want find the actual configuration FreeNas or TrueNas server
+      #>
+
 function Get-FreeNasGlobalConfig
 {
     [CmdletBinding()]

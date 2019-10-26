@@ -1,3 +1,42 @@
+<#
+      .SYNOPSIS
+      This function return configuration for you network interface for your FreeNas Server
+      .DESCRIPTION
+      This function return configuration for you network interface for your FreeNas Server
+      .EXAMPLE
+      Here an example with DHCP enable :
+
+        PS C:\> Get-FreeNasInterface
+
+        Id      :
+        Status  :
+        Alias   :
+        Dhcp    :
+        Name    :
+        Ipv4    :
+        Netmask :
+        Ipv6    :
+
+      .EXAMPLE
+      Here an example with Static configuration :
+
+        PS C:\> Get-FreeNasInterface
+
+        Id      : 1
+        Status  : Active
+        Alias   :
+        Dhcp    : False
+        Name    : le0
+        Ipv4    : 10.0.10.0
+        Netmask : 8
+        Ipv6    : False
+
+        .NOTES
+      This command return the network configuration for your FreeNas or TrueNas server
+
+      .FUNCTIONALITY
+      Use this command when you want find the network configuration FreeNas or TrueNas server
+      #>
 function Get-FreeNasInterface
 {
     [CmdletBinding()]

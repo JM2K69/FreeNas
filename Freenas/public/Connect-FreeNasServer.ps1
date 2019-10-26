@@ -4,11 +4,23 @@
       .DESCRIPTION
       Connect FreeNas Server it use to connect to your FreeNas Server or TrueNas
       .EXAMPLE
-      Connect-FreeNasServer -Server 10.0.10.0 -httpOnly
-      .EXAMPLE
-      Connect-FreeNasServer -Server 10.0.10.0 -SkipCertificateCheck $true
+      Connection not secure on Https protocol:
 
-    #>
+      PS C:\>Connect-FreeNasServer -Server 10.0.10.0 -httpOnly
+      Welcome on FreeNAS - FreeNAS-11.2-U6 (5acc1dec66)
+
+      .EXAMPLE
+      Connection with Https by default if you have a self signed certificate use the parameter SkipCertificateCheck
+
+      PS C:\>Connect-FreeNasServer -Server 10.0.10.0 -SkipCertificateCheck $true
+      Welcome on FreeNAS - FreeNAS-11.2-U6 (5acc1dec66)
+
+      .NOTES
+      By default the connection use the secure method to interact with FreeNAs or TrueNas server
+
+      .FUNCTIONALITY
+      Use this command at the begining for established the connection to your FreeNas or TrueNas server
+      #>
 function Connect-FreeNasServer
 {
     [CmdletBinding()]
