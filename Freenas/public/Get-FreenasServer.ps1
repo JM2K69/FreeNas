@@ -1,5 +1,6 @@
-﻿function Get-FreeNasServer{
+﻿function Get-FreeNasServer
+{
     Param
-    ( )  
-        return  $script:SrvFreenas
+    ( )
+    return  [ipaddress]$script:SrvFreenas
 }
