@@ -52,7 +52,7 @@ function Get-FreeNasInterface
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/network/interface/"
+        $Uri = "api/v1.0/network/interface/"
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
