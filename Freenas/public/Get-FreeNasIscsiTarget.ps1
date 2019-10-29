@@ -10,7 +10,7 @@
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/target/"
+        $Uri = "api/v1.0/services/iscsi/target/"
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
