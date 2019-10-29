@@ -59,7 +59,7 @@ function Get-FreeNasInternalCA
     { }
     Process
     {
-        $Uri = "/api/v1.0/system/certificateauthority/"
+        $Uri = "api/v1.0/system/certificateauthority/"
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
         return $result
