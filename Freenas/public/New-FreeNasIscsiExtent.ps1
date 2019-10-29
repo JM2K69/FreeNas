@@ -33,7 +33,7 @@
 
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/extent/"
+        $Uri = "api/v1.0/services/iscsi/extent/"
 
         $Obj = [Ordered]@{
             iscsi_target_extent_type = $ExtenType
