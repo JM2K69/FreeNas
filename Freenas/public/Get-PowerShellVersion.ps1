@@ -12,6 +12,6 @@ function Get-PowerShellVersion {
    ()
 
    $Script:Version = $PSVersionTable.PSVersion.Major
-   Write-Verbose "The module is running in Powershell $Version "
+   Write-Verbose -Message "The module is running in Powershell $Version "
 
 }
