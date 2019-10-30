@@ -1,5 +1,4 @@
-﻿function New-FreeNasIscsiExtent
-{
+﻿function New-FreeNasIscsiExtent {
 
     [CmdletBinding()]
     [Alias()]
@@ -26,13 +25,11 @@
     )
 
 
-    Begin
-    {
+    Begin {
 
     }
 
-    Process
-    {
+    Process {
         $Uri = "api/v1.0/services/iscsi/extent/"
 
         $Obj = [Ordered]@{
@@ -48,5 +45,5 @@
     }
 
     End
-    {}
+    { }
 }

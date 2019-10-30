@@ -34,8 +34,6 @@
 
         $result = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
-        #$result = invoke-RestMethod -method Post -body $post -Uri $Uri -WebSession $script:Session -ContentType "application/json"
-
     }
 
     End

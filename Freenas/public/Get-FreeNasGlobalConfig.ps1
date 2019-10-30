@@ -26,7 +26,6 @@ function Get-FreeNasGlobalConfig
 {
     [CmdletBinding()]
     [Alias()]
-   
     Param
     ()
 

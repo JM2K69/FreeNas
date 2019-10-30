@@ -38,7 +38,7 @@
 
                 }
             }
-            catch {}
+            Catch { throw }
             $temp = New-Object System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value  "$($result.id)"
             $temp | Add-Member -MemberType NoteProperty -Name "Extent_Type" -Value "$($result.iscsi_target_extent_type)"
@@ -94,5 +94,5 @@
 
     }
     End
-    {}
+    { }
 }

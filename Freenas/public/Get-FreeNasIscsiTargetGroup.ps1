@@ -1,5 +1,4 @@
-﻿function Get-FreeNasIscsiTargetGroup
-{
+﻿function Get-FreeNasIscsiTargetGroup {
     Param( )
 
     $Uri = "api/v1.0/services/iscsi/targetgroup/"

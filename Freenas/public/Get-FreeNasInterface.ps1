@@ -41,7 +41,7 @@ function Get-FreeNasInterface
 {
     [CmdletBinding()]
     [Alias()]
-   
+
     Param
     ()
 
@@ -63,7 +63,7 @@ function Get-FreeNasInterface
 
         switch ($result.int_dhcp)
         {
-            'True' 
+            'True'
             {
                 $Global | add-member -name "Id" -membertype NoteProperty -Value "$($result.id)"
                 $Global | add-member -name "Status" -membertype NoteProperty -Value "$($result.int_media_status)"
@@ -72,7 +72,7 @@ function Get-FreeNasInterface
                 $Global | add-member -name "Name" -membertype NoteProperty -Value "$($result.int_interface)"
                 $Global | add-member -name "Ipv6" -membertype NoteProperty -Value "$($result.int_ipv6auto)"
             }
-            Default 
+            Default
             {
                 $Global | add-member -name "Id" -membertype NoteProperty -Value "$($result.id)"
                 $Global | add-member -name "Status" -membertype NoteProperty -Value "$($result.int_media_status)"

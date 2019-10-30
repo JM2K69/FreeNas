@@ -8,8 +8,7 @@ This Function permit ta find Update for your FreeNas Server
     This function return all updates if they are available for your system
 .NOTES
 #>
-function Get-FreeNasSystemUpdate
-{
+function Get-FreeNasSystemUpdate {
     Param( )
 
     $Uri = "api/v1.0/system/update/check/"

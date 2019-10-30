@@ -1,16 +1,16 @@
 ﻿function Set-FreeNasService
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [Alias()]
     [OutputType([int])]
     Param
     (
         [Parameter (Mandatory = $true)]
-        [ValidateSet("afp", "cifs", "dynamicdns" , "ftp", "iscsitarget", "nfs", "snmp", "ssh", "tftp", "ups", "rsync", "smartd", "domaincontroller", "lldp", "webdav", "s3", "netdata")] 
+        [ValidateSet("afp", "cifs", "dynamicdns" , "ftp", "iscsitarget", "nfs", "snmp", "ssh", "tftp", "ups", "rsync", "smartd", "domaincontroller", "lldp", "webdav", "s3", "netdata")]
         [string]$Services,
 
         [Parameter (Mandatory = $true)]
-        [ValidateSet("True", "False")] 
+        [ValidateSet("True", "False")]
         [string]$ServicesStatus
 
 
@@ -23,8 +23,8 @@
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/services/$Services/"
-        
+        $Uri = "api/v1.0/services/services/$Services/"
+
         $Status = new-Object -TypeName PSObject
 
         $Status | add-member -name "srv_enable" -membertype NoteProperty -Value $ServicesStatus
@@ -34,6 +34,6 @@
     }
     End
     {
-             
+
     }
 }

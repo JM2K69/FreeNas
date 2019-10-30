@@ -1,5 +1,4 @@
-﻿function New-FreeNasIscsiTargetGroup
-{
+﻿function New-FreeNasIscsiTargetGroup {
     [CmdletBinding()]
     [Alias()]
     [OutputType([int])]
@@ -18,9 +17,8 @@
     Begin {
 
     }
-    Process
-    {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/services/iscsi/targetgroup/"
+    Process {
+        $Uri = "api/v1.0/services/iscsi/targetgroup/"
 
         $Obj = [Ordered]@{
             iscsi_target                = $TargetId

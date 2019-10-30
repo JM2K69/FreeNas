@@ -8,6 +8,7 @@ Shutdown your FreeNas server.
 #>
 function Stop-FreeNasSystem
 {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     Param( )
 
     $Uri = "api/v1.0/system/shutdown/"

@@ -31,5 +31,5 @@
         return $FreenasConf | FT
 
     }
-    End {}
+    End { }
 }

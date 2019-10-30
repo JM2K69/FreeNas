@@ -17,7 +17,7 @@
     }
     Process
     {
-        $Uri = "http://$script:SrvFreenas/api/v1.0/storage/volume/$VolumeName/zvols/"
+        $Uri = "api/v1.0/storage/volume/$VolumeName/zvols/"
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
@@ -57,7 +57,7 @@
 
         }
         return $ZVolume
-             
+
 
 
     }

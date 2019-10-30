@@ -1,5 +1,4 @@
-﻿function New-FreeNasIscsiInitiator
-{
+﻿function New-FreeNasIscsiInitiator {
     [CmdletBinding()]
     [Alias()]
     [OutputType([int])]
@@ -20,8 +19,7 @@
     Begin {
 
     }
-    Process
-    {
+    Process {
         $Uri = "api/v1.0/services/iscsi/authorizedinitiator/"
 
         $Obj = [Ordered]@{

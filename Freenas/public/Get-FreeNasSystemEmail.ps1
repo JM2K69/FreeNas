@@ -15,7 +15,7 @@
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
         $FreeNasConf = New-Object System.Collections.ArrayList
-        
+
         $temp = New-Object PSObject
         $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value $result.id
         $temp | Add-Member -MemberType NoteProperty -Name "From_Email" -Value $result.em_fromemail
@@ -27,11 +27,11 @@
 
 
         $FreeNasConf.Add($temp) | Out-Null
-        
+
 
         return $FreeNasConf | fl
 
 
     }
-    End {}
+    End { }
 }

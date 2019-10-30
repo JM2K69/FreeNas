@@ -47,7 +47,7 @@
     { }
     Process
     {
-        $Uri = "/api/v1.0/system/settings/"
+        $Uri = "api/v1.0/system/settings/"
 
         $Obj = new-Object -TypeName PSObject
 

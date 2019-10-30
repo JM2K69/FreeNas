@@ -21,7 +21,7 @@
         {
 
         }
-        else 
+        else
         {
             $temp | Add-Member -MemberType NoteProperty -Name "Portal IPs" -Value $($result.iscsi_target_portal_ips).Split(":")[0]
             $temp | Add-Member -MemberType NoteProperty -Name "Portal ports" -Value $($result.iscsi_target_portal_ips).Split(":")[1]
@@ -35,5 +35,5 @@
 
     }
     End
-    {}
+    { }
 }
