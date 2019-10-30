@@ -14,10 +14,10 @@
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
-        $FreenasIscsiTarget = New-Object System.Collections.ArrayList
+        $FreenasIscsiTarget = New-Object -TypeName System.Collections.ArrayList
         for ($i = 0; $i -lt $result.Count; $i++)
         {
-            $temp = New-Object System.Object
+            $temp = New-Object -TypeName System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].Id)"
             $temp | Add-Member -MemberType NoteProperty -Name "Target_Alias" -Value "$($result[$i].iscsi_target_alias)"
             $temp | Add-Member -MemberType NoteProperty -Name "Target_Name" -Value "$($result[$i].iscsi_target_name)"

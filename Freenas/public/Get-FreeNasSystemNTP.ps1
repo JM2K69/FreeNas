@@ -14,11 +14,11 @@
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
-        $FreenasConf = New-Object System.Collections.ArrayList
+        $FreenasConf = New-Object -TypeName System.Collections.ArrayList
         for ($i = 0; $i -lt $result.Count; $i++)
         {
 
-            $temp = New-Object System.Object
+            $temp = New-Object -TypeName System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
             $temp | Add-Member -MemberType NoteProperty -Name "NTP_Server" -Value "$($result[$i].ntp_address)"
             $temp | Add-Member -MemberType NoteProperty -Name "NTP_Burst" -Value "$($result[$i].ntp_burst)"

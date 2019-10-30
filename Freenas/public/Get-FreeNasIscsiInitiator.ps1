@@ -14,9 +14,9 @@
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
-        $Obj = New-Object System.Collections.ArrayList
+        $Obj = New-Object -TypeName System.Collections.ArrayList
 
-        $temp = New-Object System.Object
+        $temp = New-Object -TypeName System.Object
         $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value $result.id
         $temp | Add-Member -MemberType NoteProperty -Name "Initiator" -Value $result.iscsi_target_initiator_initiators
         $temp | Add-Member -MemberType NoteProperty -Name "Auth Network" -Value $result.iscsi_target_initiator_auth_network
