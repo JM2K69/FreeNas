@@ -429,7 +429,7 @@
                 catch {
                     $errMessage = "Check your internet connection, Verify below url in browser`n"
                     $errMessage += $url
-                    Write-Host $errMessage -BackgroundColor DarkRed
+                    Write-Error $errMessage
                 }
             } #Online
         } #switch pscmdlet

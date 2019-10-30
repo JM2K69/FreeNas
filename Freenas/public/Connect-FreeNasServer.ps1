@@ -73,7 +73,14 @@ function Connect-FreeNasServer
 
     Begin
     {
-        New-banner -Text "FreeNas 2.0" -Online
+        Try
+        {
+            New-banner -Text "FreeNas 2.0" -Online -ErrorAction stop
+        }
+        Catch
+        {
+            New-banner -Text "FreeNas 2.0"
+        }
 
     }
     Process
