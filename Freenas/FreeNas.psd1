@@ -12,7 +12,7 @@
     RootModule        = './FreeNas.psm1'
 
     # Numéro de version de ce module.
-    ModuleVersion     = '2.0.1'
+    ModuleVersion     = '2.0.2'
 
     # Éditions PS prises en charge
     # CompatiblePSEditions = @()
