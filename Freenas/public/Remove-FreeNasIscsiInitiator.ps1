@@ -16,7 +16,7 @@ function Remove-FreeNasIscsiInitiator
     Process
     {
 
-        $Uri = "/api/v1.0/services/iscsi/authorizedinitiator/$Id/"
+        $Uri = "api/v1.0/services/iscsi/authorizedinitiator/$Id/"
 
         if ($PSCmdlet.ShouldProcess("will be remove" , "The Authorized Initiator with the id $Id"))
         {

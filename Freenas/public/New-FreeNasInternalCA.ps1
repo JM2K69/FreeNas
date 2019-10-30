@@ -47,7 +47,7 @@
     Process
     {
 
-        $Uri = "/api/v1.0/system/certificateauthority/internal/"
+        $Uri = "api/v1.0/system/certificateauthority/internal/"
 
         $Obj = new-Object -TypeName PSObject
 

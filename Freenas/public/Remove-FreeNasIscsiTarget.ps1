@@ -16,7 +16,7 @@ function Remove-FreeNasIscsiTarget
     Process
     {
 
-        $Uri = "/api/v1.0/services/iscsi/target/$Id/"
+        $Uri = "api/v1.0/services/iscsi/target/$Id/"
 
         if ($PSCmdlet.ShouldProcess("will be remove" , "The Target with the id $Id"))
         {

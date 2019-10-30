@@ -9,10 +9,10 @@
 @{
 
     # Module de script ou fichier de module binaire associé à ce manifeste
-    RootModule = './FreeNas.psm1'
+    RootModule        = './FreeNas.psm1'
 
     # Numéro de version de ce module.
-    ModuleVersion     = '1.3.1'
+    ModuleVersion     = '2.0.2'
 
     # Éditions PS prises en charge
     # CompatiblePSEditions = @()
@@ -95,19 +95,19 @@
         PSData = @{
 
             # Des balises ont été appliquées à ce module. Elles facilitent la découverte des modules dans les galeries en ligne.
-            Tags = 'API','FreeNas','REST','iSCSI','PSEdition_Desktop','PSEdition_Core'
+            Tags         = 'API', 'FreeNas', 'REST', 'iSCSI', 'PSEdition_Desktop', 'PSEdition_Core'
 
             # URL vers la licence de ce module.
             # LicenseUri = ''
 
             # URL vers le site web principal de ce projet.
-             ProjectUri = 'https://github.com/JM2K69/FreeNas'
+            ProjectUri   = 'https://github.com/JM2K69/FreeNas'
 
             # URL vers une icône représentant ce module.
             # IconUri = ''
 
             # Propriété ReleaseNotes de ce module
-             ReleaseNotes = 'Update Powershell Gallery tags'
+            ReleaseNotes = 'Add secure Connections'
 
         } # Fin de la table de hachage PSData
 

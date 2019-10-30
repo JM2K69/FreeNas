@@ -49,7 +49,7 @@
 
     Process
     {
-        $Uri = "/api/v1.0/system/certificate/internal/"
+        $Uri = "api/v1.0/system/certificate/internal/"
         $Obj = new-Object -TypeName PSObject
 
         $Obj | add-member -name "cert_city" -membertype NoteProperty -Value $City

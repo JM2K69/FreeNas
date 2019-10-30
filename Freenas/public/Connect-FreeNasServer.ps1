@@ -1,22 +1,45 @@
 ﻿<#
       .SYNOPSIS
       Connect FreeNas Server it use to connect to your FreeNas Server or TrueNas
+
       .DESCRIPTION
       Connect FreeNas Server it use to connect to your FreeNas Server or TrueNas
-      .EXAMPLE
-      Connection not secure on Https protocol:
-
-      PS C:\>Connect-FreeNasServer -Server 10.0.10.0 -httpOnly
-      Welcome on FreeNAS - FreeNAS-11.2-U6 (5acc1dec66)
+      Support connection to HTTPS (default) or HTTP
 
       .EXAMPLE
-      Connection with Https by default if you have a self signed certificate use the parameter SkipCertificateCheck
+      Connect-FreeNasServer -Server 192.0.2.1
 
-      PS C:\>Connect-FreeNasServer -Server 10.0.10.0 -SkipCertificateCheck $true
-      Welcome on FreeNAS - FreeNAS-11.2-U6 (5acc1dec66)
+      Connect to an FreeNas using HTTPS with IP 192.0.2.1 using (Get-)credential
+
+      .EXAMPLE
+      Connect-FreeNasServer -Server 192.0.2.1 -SkipCertificateCheck
+
+      Connect to an FreeNas using HTTPS (without check certificate validation) with IP 192.0.2.1 using (Get-)credential
+
+      .EXAMPLE
+      Connect-FreeNasServer -Server 192.0.2.1 -httpOnly
+
+      Connect to an FreeNas using HTTP (unsecure !) with IP 192.0.2.1 using (Get-)credential
+
+      .EXAMPLE
+      Connect-FreeNasServer -Server 192.0.2.1 -port 4443
+
+      Connect to an FreeNas using HTTPS (with port 4443) with IP 192.0.2.1 using (Get-)credential
+
+      .EXAMPLE
+      $cred = get-credential
+      PS > Connect-FreeNasServer -Server 192.0.2.1 -credential $cred
+
+      Connect to an FreeNas with IP 192.0.2.1 and passing (Get-)credential
+
+      .EXAMPLE
+      $mysecpassword = ConvertTo-SecureString mypassword -AsPlainText -Force
+      PS > Connect-FreeNasServer -Server 192.0.2.1 -Username root -Password $mysecpassword
+
+      Connect to an FreeNas with IP 192.0.2.1 using Username and Password
 
       .NOTES
-      By default the connection use the secure method to interact with FreeNAs or TrueNas server
+      By default the connection use the secure method to interact with FreeNas or TrueNas server
 
       .FUNCTIONALITY
       Use this command at the begining for established the connection to your FreeNas or TrueNas server
@@ -50,12 +73,7 @@ function Connect-FreeNasServer
 
     Begin
     {
-        $global:SrvFreenas = ""
-        $global:Session = ""
-        $global:Header
-        $Uri = "http://$Server/api/v1.0"
-        New-banner -Text "FreeNas dev" -Online
-        Write-Verbose "The Server URI i set to $Uri"
+        New-banner -Text "FreeNas 2.0" -Online
 
     }
     Process

@@ -10,7 +10,7 @@
     { }
     Process
     {
-        $Uri = "/api/v1.0/system/settings/"
+        $Uri = "api/v1.0/system/settings/"
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
     }

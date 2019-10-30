@@ -13,27 +13,22 @@ set-location -Path $RootFolder.FullName
 Write-Verbose "Importing module"
 import-module .\Freenas -Force
 
-Describe  "Connection" {
-
-    $IpsrvFreenas = Read-Host "Enter the IPaddress for the Tests"
-    $query = Connect-FreeNasServer -Server $IpsrvFreenas
-    $query | Should not be Throw
-
-}
 
 Describe  "Get Configuration" {
 
+    It "Secure Connection" {
 
-    It "Get FreeNas Server" {
+        $IpsrvFreenas = Read-Host "Enter the IPaddress for the Tests"
+        $query = Connect-FreeNasServer -Server $IpsrvFreenas -SkipCertificateCheck
+        $query | Should not be Throw
 
-        $query = Get-FreeNasServer
-        $query | Should be $IpsrvFreenas
     }
 
     It "Get FreeNas Disk configuration" {
 
         $query = Get-FreeNasDisk
         $query | Should not be $null
+        $query | Should BeOfType System.Management.Automation.PSCustomObject
     }
     It "Get FreeNas Service" {
 
@@ -44,10 +39,10 @@ Describe  "Get Configuration" {
     It "Get FreeNas Global config" {
 
         $query = Get-FreeNasGlobalConfig
-        $query.Id | Should -BeIn (1..10)
-        $query.Domain | Should not be $null
-        $query.Gateway | Should not be $null
-        $query.Hostname | Should not be $null
+        $query.Id | Should -BeNullOrEmpty
+        $query.Domain | Should -BeNullOrEmpty
+        $query.Gateway | Should -BeNullOrEmpty
+        $query.Hostname | Should -BeNullOrEmpty
         $query.Nameserver1 | Should -BeNullOrEmpty
         $query.Nameserver2 | Should -BeNullOrEmpty
         $query.Nameserver3 | Should -BeNullOrEmpty
@@ -63,6 +58,5 @@ Describe  "Get Configuration" {
         $query.Advanced_Serial_port | Should BeNullOrEmpty
         $query.Advanced_Serial_speed | Should  BeNullOrEmpty
     }
-
 
 }

@@ -16,7 +16,7 @@ function Remove-FreeNasIscsiAssociat2Extent
     Process
     {
 
-        $Uri = "/api/v1.0/services/iscsi/extent/$Id/"
+        $Uri = "api/v1.0/services/iscsi/extent/$Id/"
 
         if ($PSCmdlet.ShouldProcess("will be remove" , "The Association to Exent with the id $Id"))
         {
