@@ -18,7 +18,7 @@ function Show-FreeNasException() {
     If ($Exception.Exception.Response) {
         if ("Desktop" -eq $PSVersionTable.PSEdition) {
             $result = $Exception.Exception.Response.GetResponseStream()
-            $reader = New-Object System.IO.StreamReader($result)
+            $reader = New-Object -TypeName System.IO.StreamReader($result)
             $responseBody = $reader.ReadToEnd()
             $responseJson =  $responseBody | ConvertFrom-Json
         }
