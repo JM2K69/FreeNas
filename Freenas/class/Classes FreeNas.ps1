@@ -52,7 +52,7 @@ class DDisk
         {
             $Name = ($disk.disk_name)
             $Size_GB = ([Math]::Round($disk.disk_size / 1024 / 1024 / 1024, 2))
-            Write-Verbose " Find the disk $name with the size $Size_GB  "
+            Write-Verbose -Message " Find the disk $name with the size $Size_GB  "
             $diskFound = [Disk]::new()
             [DisK]@{
                 Name    = ($disk.disk_name)
