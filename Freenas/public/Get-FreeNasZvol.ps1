@@ -24,11 +24,11 @@
     }
     End
     {
-        $ZVolume = New-Object System.Collections.ArrayList
+        $ZVolume = New-Object -TypeName System.Collections.ArrayList
 
         if ($null -eq $result.count)
         {
-            $temp = New-Object System.Object
+            $temp = New-Object -TypeName System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result.Name)"
             $temp | Add-Member -MemberType NoteProperty -Name "Comments" -Value "$($result.comments)"
             $temp | Add-Member -MemberType NoteProperty -Name "Deduplication" -Value "$($result.dedup)"
@@ -45,7 +45,7 @@
 
             for ($i = 0; $i -lt $result.Count; $i++)
             {
-                $temp = New-Object System.Object
+                $temp = New-Object -TypeName System.Object
                 $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result[$i].Name)"
                 $temp | Add-Member -MemberType NoteProperty -Name "Comments" -Value "$($result[$i].comments)"
                 $temp | Add-Member -MemberType NoteProperty -Name "Deduplication" -Value "$($result[$i].dedup)"

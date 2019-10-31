@@ -73,7 +73,14 @@ function Connect-FreeNasServer
 
     Begin
     {
-        New-banner -Text "FreeNas 2.0" -Online
+        Try
+        {
+            New-banner -Text "FreeNas 2.0" -Online -ErrorAction stop
+        }
+        Catch
+        {
+            New-banner -Text "FreeNas 2.0"
+        }
 
     }
     Process
@@ -84,7 +91,7 @@ function Connect-FreeNasServer
         #If there is a password (and a user), create a credentials
         if ($Password)
         {
-            $Credentials = New-Object System.Management.Automation.PSCredential($Username, $Password)
+            $Credentials = New-Object -TypeName System.Management.Automation.PSCredential($Username, $Password)
         }
         #Not Credentials (and no password)
         if ($NULL -eq $Credentials)
@@ -121,12 +128,12 @@ function Connect-FreeNasServer
             #for PowerShell (<=) 5 (Desktop), Enable TLS 1.1, 1.2 and Disable SSL chain trust
             if ("Desktop" -eq $PSVersionTable.PsEdition)
             {
-                Write-Verbose "Desktop Version try to Enable TLS 1.1 and 1.2"
+                Write-Verbose -Message "Desktop Version try to Enable TLS 1.1 and 1.2"
                 #Enable TLS 1.1 and 1.2
                 Set-FreeNasCipherSSL
                 if ($SkipCertificateCheck)
                 {
-                    Write-Verbose "Disable SSL chain trust"
+                    Write-Verbose -Message "Disable SSL chain trust"
 
                     #Disable SSL chain trust...
                     Set-FreeNasuntrustedSSL
@@ -154,7 +161,7 @@ function Connect-FreeNasServer
             throw "Unable to get data"
         }
 
-        Write-Host "Welcome on"$result.name"-"$result.fullversion""
+        Write-Host -Object "Welcome on"$result.name"-"$result.fullversion""
 
         $Script:Session = $Freenas_S
 

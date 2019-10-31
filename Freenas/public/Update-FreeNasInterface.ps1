@@ -25,7 +25,7 @@ function Update-FreeNasInterface
         $Uri = "api/v1.0/network/interface/$Id/"
         $Obj = new-Object -TypeName PSObject
 
-        Write-verbose "Detect DHCP status"
+        Write-Verbose -Message "Detect DHCP status"
         $Dhcp = Get-FreeNasInterface
 
         switch ($Dhcp.Dhcp)
