@@ -1,14 +1,14 @@
 ﻿#region Connection au serveur
 Import-Module C:\Users\JM2K69\Documents\GitHub\FreeNas\Freenas\FreeNas.psm1 -Force
-Connect-FreeNasServer -Server 192.168.0.25
+Connect-FreeNasServer -Server 192.168.0.26 -httpOnly
 
 #endregion Connection au serveur
 
 #region Création de Volumes
 
 Get-FreeNasDisk
-New-FreeNasVolume -VolumeName data -Vdevtype stripe -NbDisks 2 -StartDisksNB 0
-New-FreeNasVolume -VolumeName data2 -Vdevtype raidz -NbDisks 3 -StartDisksNB 2
+New-FreeNasVolume -VolumeName data -Vdevtype stripe -NbDisks 2 -StartDisksNB 1
+New-FreeNasVolume -VolumeName data2 -Vdevtype raidz -NbDisks 3 -StartDisksNB 3
 Get-FreeNasVolume
 #endregion Création de Volumes
 
@@ -58,8 +58,8 @@ Get-FreeNasIscsiTarget
 
 #region Extent
 Get-FreeNasIscsiExtent
-New-FreeNasIscsiExtent -ExtentName Disk05 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath da5
 New-FreeNasIscsiExtent -ExtentName Disk06 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath da6
+New-FreeNasIscsiExtent -ExtentName Disk07 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath da7
 New-FreeNasIscsiExtent -ExtentName Zvol1 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath zvol/data/Zvol1
 New-FreeNasIscsiExtent -ExtentName Zvol2 -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath zvol/data2/Zvol2
 New-FreeNasIscsiExtent -ExtentName Zvol1a -ExtenType Disk -ExtentSpeed SSD -ExtenDiskPath zvol/data/Zvol1a

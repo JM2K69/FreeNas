@@ -161,7 +161,7 @@ function Connect-FreeNasServer
             throw "Unable to get data"
         }
 
-        Write-Host -Object "Welcome on"$result.name"-"$result.fullversion""
+        Write-Host "Welcome on"$result.name"-"$result.fullversion""
 
         $Script:Session = $Freenas_S
 
