@@ -163,10 +163,6 @@ function Connect-FreeNasServer
         [Parameter(Mandatory = $true)]
         [Alias("Freenas")]
         $Server,
-        [Parameter(Mandatory = $true)]
-        [ValidateSet("v1.0", "v2.0")]
-        [Alias("Api")]
-        $ApiVersion,
         [Parameter(Mandatory = $false)]
         [String]$Username,
         [Parameter(Mandatory = $false)]
@@ -227,12 +223,8 @@ function Connect-FreeNasServer
             {
                 $port = 80
             }
-            switch ($ApiVersion)
-            {
-                'v1.0' { $uri = "http://${Server}:${port}/api/v1.0/system/version/" }
-                'v2.0' { $uri = "http://${Server}:${port}/api/v2.0/system/info" }
-                Default { }
-            }
+
+            $uri = "http://${Server}:${port}/api/v2.0/system/info"
 
         }
         else
@@ -256,12 +248,7 @@ function Connect-FreeNasServer
                 }
 
             }
-            switch ($ApiVersion)
-            {
-                'v1.0' { $uri = "http://${Server}:${port}/api/v1.0/system/version/" }
-                'v2.0' { $uri = "http://${Server}:${port}/api/v2.0/system/info" }
-                Default { }
-            }
+            $uri = "http://${Server}:${port}/api/v2.0/system/info" 
 
         }
 
@@ -284,12 +271,7 @@ function Connect-FreeNasServer
             throw "Unable to get data"
         }
 
-        switch ($ApiVersion)
-        {
-            'v1.0' { Write-Host "Welcome on"$result.name"-"$result.fullversion"" }
-            'v2.0' { Write-Host "Welcome on"$result.name"-"$result.version"-"$result.system_product"" }
-            Default { }
-        }
+        Write-Host "Welcome on"$result.name"-"$result.version"-"$result.system_product""
 
         $Script:Session = $Freenas_S
 
@@ -356,12 +338,7 @@ function Get-FreeNasCertificate
 
     Begin
     {
-        switch ($ApiVersion)
-        {
-            'v1.0' { $uri = "api/v1.0/system/certificate/" }
-            'v2.0' { $uri = "api/v2.0/certificate/" }
-            Default { }
-        }
+        $uri = "api/v2.0/certificate/"
     }
     Process
     {
@@ -370,171 +347,99 @@ function Get-FreeNasCertificate
 
         $Certificate = New-Object -TypeName System.Collections.ArrayList
 
-        switch ($ApiVersion)
+        if ($null -eq $result.count)
         {
-            'v1.0'
-            {
-                if ($null -eq $result.count)
-                {
 
-                    $temp = New-Object -TypeName System.Object
-                    $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result.cert_name)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "CSR" -Value "$($result.cert_CSR)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "DN" -Value "$($result.cert_DN)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Certificate" -Value "$($result.cert_certificate)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Chain" -Value "$($result.cert_chain)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "City" -Value "$($result.cert_city)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Common" -Value "$($result.cert_common)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Country" -Value "$($result.cert_country)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Disgest Algorithm" -Value "$($result.cert_digest_algorithm)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Email" -Value "$($result.cert_email)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "From" -Value "$($result.cert_from)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Issuer" -Value "$($result.cert_issuer)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Key Lenght" -Value "$($result.cert_key_length)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Lifetime" -Value "$($result.cert_lifetime)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Organization" -Value "$($result.cert_organization)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "PrivateKey" -Value "$($result.cert_privatekey)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Serial" -Value "$($result.cert_serial)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result.cert_state)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Type" -Value "$($result.cert_type)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Type CSR" -Value "$($result.cert_type_CSR)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Type CSR existing" -Value "$($result.cert_type_existing)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Type Internal" -Value "$($result.cert_type_internal)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Valid until" -Value "$($result.cert_until)"
-                    $Certificate.Add($temp) | Out-Null
-                }
-                else
-                {
-                    for ($i = 0; $i -lt $result.Count; $i++)
-                    {
-                        $temp = New-Object -TypeName System.Object
-                        $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result[$i].cert_name)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "CSR" -Value "$($result[$i].cert_CSR)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "DN" -Value "$($result[$i].cert_DN)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Certificate" -Value "$($result[$i].cert_certificate)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Chain" -Value "$($result[$i].cert_chain)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "City" -Value "$($result[$i].cert_city)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Common" -Value "$($result[$i].cert_common)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Country" -Value "$($result[$i].cert_country)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Disgest Algorithm" -Value "$($result[$i].cert_digest_algorithm)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Email" -Value "$($result[$i].cert_email)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "From" -Value "$($result[$i].cert_from)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Issuer" -Value "$($result[$i].cert_issuer)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Key Lenght" -Value "$($result[$i].cert_key_length)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Lifetime" -Value "$($result[$i].cert_lifetime)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Organization" -Value "$($result[$i].cert_organization)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "PrivateKey" -Value "$($result[$i].cert_privatekey)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Serial" -Value "$($result[$i].cert_serial)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result[$i].cert_state)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Type" -Value "$($result[$i].cert_type)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Type CSR" -Value "$($result[$i].cert_type_CSR)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Type CSR existing" -Value "$($result[$i].cert_type_existing)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Type Internal" -Value "$($result[$i].cert_type_internal)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Valid until" -Value "$($result[$i].cert_until)"
-                        $Certificate.Add($temp) | Out-Null
-                    }
-                }
-            }
-            'v2.0'
+            $temp = New-Object -TypeName System.Object
+            $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result.name)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Type" -Value "$($result.type)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Certificate" -Value "$($result.certificate)"
+            $temp | Add-Member -MemberType NoteProperty -Name "PrivateKey" -Value "$($result.privatekey)"
+            $temp | Add-Member -MemberType NoteProperty -Name "CSR" -Value "$($result.CSR)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Signedby" -Value "$($result.signedby)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Root path" -Value "$($result.root_path)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Certificate path" -Value "$($result.certificate_path)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Private key path" -Value "$($result.private_key_path)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Csr path" -Value "$($result.csr_path)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Cert type" -Value "$($result.cert_type)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Issuer" -Value "$($result.issuer)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Chain list" -Value "$($result.chain_list)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Country" -Value "$($result.country)"
+            $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result.state)"
+            $temp | Add-Member -MemberType NoteProperty -Name "City" -Value "$($result.city)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Organization" -Value "$($result.organization)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Organizational unit" -Value "$($result.organization_unit)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Common" -Value "$($result.Common)"
+            $temp | Add-Member -MemberType NoteProperty -Name "San" -Value "$($result.San)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Email" -Value "$($result.email)"
+            $temp | Add-Member -MemberType NoteProperty -Name "DN" -Value "$($result.DN)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Digest_algorithm" -Value "$($result.digest_algorithm)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Lifetime" -Value "$($result.lifetime)"
+            $temp | Add-Member -MemberType NoteProperty -Name "From" -Value "$($result.from)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Until" -Value "$($result.until)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Serial" -Value "$($result.serial)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Chain" -Value "$($result.chain)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Fingerprint" -Value "$($result.fingerprint)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Key lenght" -Value "$($result.key_length)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Key Type" -Value "$($result.key_type)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Parsed" -Value "$($result.parsed)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Internal" -Value "$($result.internal)"
+            $temp | Add-Member -MemberType NoteProperty -Name "CA Type Existing" -Value "$($result.CA_type_existing)"
+            $temp | Add-Member -MemberType NoteProperty -Name "CA type Internal" -Value "$($result.CA_type_internal)"
+            $temp | Add-Member -MemberType NoteProperty -Name "CA type Intermediate" -Value "$($result.CA_type_intermediate)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Cert type existing" -Value "$($result.cert_type_existing)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Cert type Internal" -Value "$($result.cert_type_internal)"
+            $temp | Add-Member -MemberType NoteProperty -Name "CA type CSR" -Value "$($result.cert_type_CSR)"
+            $Certificate.Add($temp) | Out-Null
+        }
+        else
+        {
+            for ($i = 0; $i -lt $result.Count; $i++)
             {
-                if ($null -eq $result.count)
-                {
-
-                    $temp = New-Object -TypeName System.Object
-                    $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result.name)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Type" -Value "$($result.type)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Certificate" -Value "$($result.certificate)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "PrivateKey" -Value "$($result.privatekey)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "CSR" -Value "$($result.CSR)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Signedby" -Value "$($result.signedby)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Root path" -Value "$($result.root_path)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Certificate path" -Value "$($result.certificate_path)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Private key path" -Value "$($result.private_key_path)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Csr path" -Value "$($result.csr_path)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Cert type" -Value "$($result.cert_type)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Issuer" -Value "$($result.issuer)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Chain list" -Value "$($result.chain_list)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Country" -Value "$($result.country)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result.state)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "City" -Value "$($result.city)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Organization" -Value "$($result.organization)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Organizational unit" -Value "$($result.organization_unit)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Common" -Value "$($result.Common)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "San" -Value "$($result.San)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Email" -Value "$($result.email)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "DN" -Value "$($result.DN)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Digest_algorithm" -Value "$($result.digest_algorithm)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Lifetime" -Value "$($result.lifetime)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "From" -Value "$($result.from)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Until" -Value "$($result.until)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Serial" -Value "$($result.serial)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Chain" -Value "$($result.chain)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Fingerprint" -Value "$($result.fingerprint)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Key lenght" -Value "$($result.key_length)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Key Type" -Value "$($result.key_type)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Parsed" -Value "$($result.parsed)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Internal" -Value "$($result.internal)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "CA Type Existing" -Value "$($result.CA_type_existing)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "CA type Internal" -Value "$($result.CA_type_internal)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "CA type Intermediate" -Value "$($result.CA_type_intermediate)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Cert type existing" -Value "$($result.cert_type_existing)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Cert type Internal" -Value "$($result.cert_type_internal)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "CA type CSR" -Value "$($result.cert_type_CSR)"
-                    $Certificate.Add($temp) | Out-Null
-                }
-                else
-                {
-                    for ($i = 0; $i -lt $result.Count; $i++)
-                    {
-                        $temp = New-Object -TypeName System.Object
-                        $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result[$i].name)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Type" -Value "$($result[$i].type)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Certificate" -Value "$($result[$i].certificate)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "PrivateKey" -Value "$($result[$i].privatekey)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "CSR" -Value "$($result[$i].CSR)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Signedby" -Value "$($result[$i].signedby)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Root path" -Value "$($result[$i].root_path)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Certificate path" -Value "$($result[$i].certificate_path)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Private key path" -Value "$($result[$i].private_key_path)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Csr path" -Value "$($result[$i].csr_path)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Cert type" -Value "$($result[$i].cert_type)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Issuer" -Value "$($result[$i].issuer)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Chain list" -Value "$($result[$i].chain_list)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Country" -Value "$($result[$i].country)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result[$i].state)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "City" -Value "$($result[$i].city)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Organization" -Value "$($result[$i].organization)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Organizational unit" -Value "$($result[$i].organization_unit)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Common" -Value "$($result[$i].Common)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "San" -Value "$($result[$i].San)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Email" -Value "$($result[$i].email)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "DN" -Value "$($result[$i].DN)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Digest_algorithm" -Value "$($result[$i].digest_algorithm)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Lifetime" -Value "$($result[$i].lifetime)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "From" -Value "$($result[$i].from)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Until" -Value "$($result[$i].until)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Serial" -Value "$($result[$i].serial)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Chain" -Value "$($result[$i].chain)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Fingerprint" -Value "$($result[$i].fingerprint)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Key lenght" -Value "$($result[$i].key_length)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Key Type" -Value "$($result[$i].key_type)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Parsed" -Value "$($result[$i].parsed)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Internal" -Value "$($result[$i].internal)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "CA Type Existing" -Value "$($result[$i].CA_type_existing)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "CA type Internal" -Value "$($result[$i].CA_type_internal)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "CA type Intermediate" -Value "$($result[$i].CA_type_intermediate)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Cert type existing" -Value "$($result[$i].cert_type_existing)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "Cert type Internal" -Value "$($result[$i].cert_type_internal)"
-                        $temp | Add-Member -MemberType NoteProperty -Name "CA type CSR" -Value "$($result[$i].cert_type_CSR)"
-                        $Certificate.Add($temp) | Out-Null
-                    }
-                }
+                $temp = New-Object -TypeName System.Object
+                $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result[$i].name)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Type" -Value "$($result[$i].type)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Certificate" -Value "$($result[$i].certificate)"
+                $temp | Add-Member -MemberType NoteProperty -Name "PrivateKey" -Value "$($result[$i].privatekey)"
+                $temp | Add-Member -MemberType NoteProperty -Name "CSR" -Value "$($result[$i].CSR)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Signedby" -Value "$($result[$i].signedby)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Root path" -Value "$($result[$i].root_path)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Certificate path" -Value "$($result[$i].certificate_path)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Private key path" -Value "$($result[$i].private_key_path)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Csr path" -Value "$($result[$i].csr_path)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Cert type" -Value "$($result[$i].cert_type)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Issuer" -Value "$($result[$i].issuer)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Chain list" -Value "$($result[$i].chain_list)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Country" -Value "$($result[$i].country)"
+                $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result[$i].state)"
+                $temp | Add-Member -MemberType NoteProperty -Name "City" -Value "$($result[$i].city)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Organization" -Value "$($result[$i].organization)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Organizational unit" -Value "$($result[$i].organization_unit)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Common" -Value "$($result[$i].Common)"
+                $temp | Add-Member -MemberType NoteProperty -Name "San" -Value "$($result[$i].San)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Email" -Value "$($result[$i].email)"
+                $temp | Add-Member -MemberType NoteProperty -Name "DN" -Value "$($result[$i].DN)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Digest_algorithm" -Value "$($result[$i].digest_algorithm)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Lifetime" -Value "$($result[$i].lifetime)"
+                $temp | Add-Member -MemberType NoteProperty -Name "From" -Value "$($result[$i].from)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Until" -Value "$($result[$i].until)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Serial" -Value "$($result[$i].serial)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Chain" -Value "$($result[$i].chain)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Fingerprint" -Value "$($result[$i].fingerprint)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Key lenght" -Value "$($result[$i].key_length)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Key Type" -Value "$($result[$i].key_type)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Parsed" -Value "$($result[$i].parsed)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Internal" -Value "$($result[$i].internal)"
+                $temp | Add-Member -MemberType NoteProperty -Name "CA Type Existing" -Value "$($result[$i].CA_type_existing)"
+                $temp | Add-Member -MemberType NoteProperty -Name "CA type Internal" -Value "$($result[$i].CA_type_internal)"
+                $temp | Add-Member -MemberType NoteProperty -Name "CA type Intermediate" -Value "$($result[$i].CA_type_intermediate)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Cert type existing" -Value "$($result[$i].cert_type_existing)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Cert type Internal" -Value "$($result[$i].cert_type_internal)"
+                $temp | Add-Member -MemberType NoteProperty -Name "CA type CSR" -Value "$($result[$i].cert_type_CSR)"
+                $Certificate.Add($temp) | Out-Null
             }
-            Default { }
         }
     }
     End
@@ -576,50 +481,26 @@ function Get-FreeNasDisk
     Param( )
     begin
     {
-        switch ($ApiVersion)
-        {
-            'v1.0' { $uri = "api/v1.0/storage/disk/" }
-            'v2.0' { $uri = "api/v2.0/disk" }
-            Default { }
-        }
+        $uri = "api/v2.0/disk"
+
     }
     process
     {
         $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
-        switch ($ApiVersion)
+        foreach ($disk in $results)
         {
-            'v1.0'
-            {
-                foreach ($disk in $results)
-                {
-                    $Name = ($disk.disk_name)
-                    $Size_GB = ([Math]::Round($disk.disk_size / 1024 / 1024 / 1024, 2))
-                    Write-Verbose -Message " Find the disk $name with the size $Size_GB"
-                    [PSCustomObject]@{
-                        Name    = ($disk.disk_name)
-                        Size_GB = ([Math]::Round($disk.disk_size / 1024 / 1024 / 1024, 2))
-                    }
-                }
-            }
-            'v2.0'
-            {
-                foreach ($disk in $results)
-                {
-                    $Name = ($disk.name)
-                    $Size_GB = ([Math]::Round($disk.size / 1024 / 1024 / 1024, 2))
-                    Write-Verbose -Message " Find the disk $name with the size $Size_GB"
-                    [PSCustomObject]@{
-                        Name    = ($disk.name)
-                        Number  = ($disk.number)
-                        Size_GB = ([Math]::Round($disk.size / 1024 / 1024 / 1024, 2))
-                        Type    = ($disk.type)
-                        Model   = ($disk.model)
+            $Name = ($disk.name)
+            $Size_GB = ([Math]::Round($disk.size / 1024 / 1024 / 1024, 2))
+            Write-Verbose -Message " Find the disk $name with the size $Size_GB"
+            [PSCustomObject]@{
+                Name    = ($disk.name)
+                Number  = ($disk.number)
+                Size_GB = ([Math]::Round($disk.size / 1024 / 1024 / 1024, 2))
+                Type    = ($disk.type)
+                Model   = ($disk.model)
 
-                    }
-                }
             }
-            Default { }
         }
     }
     end
@@ -633,16 +514,7 @@ function Get-FreeNasDiskUnsed
 
     begin
     {
-        switch ($ApiVersion)
-        {
-            'v1.0'
-            {
-                write-warning "This command doesn't exist in API v1.0"
-                break
-            }
-            'v2.0' { $uri = "api/v2.0/disk/get_unused" }
-            Default { }
-        }
+        $uri = "api/v2.0/disk/get_unused"
     }
     process
     {
@@ -664,8 +536,101 @@ function Get-FreeNasDiskUnsed
     }
     end { }
 }
+function Get-FreeNasGlobalConfig
+{
+    [CmdletBinding()]
+    [Alias()]
+    Param
+    ()
+
+
+    Begin
+    {
+        $uri = "api/v2.0/network/configuration"
+    }
+    Process
+    {
+
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+    }
+    End
+    {
+        $Global = new-Object -TypeName PSObject
+
+        $Global | add-member -name "Id" -membertype NoteProperty -Value "$($result.id)"
+        $Global | add-member -name "Domain" -membertype NoteProperty -Value "$($result.domain)"
+        $Global | add-member -name "Gateway Ipv4" -membertype NoteProperty -Value "$($result.ipv4gateway)"
+        $Global | add-member -name "Gateway Ipv6" -membertype NoteProperty -Value "$($result.ipv6gateway)"
+        $Global | add-member -name "Hostname" -membertype NoteProperty -Value "$($result.hostname_local)"
+        $Global | add-member -name "Nameserver1" -membertype NoteProperty -Value "$($result.nameserver1)"
+        $Global | add-member -name "Nameserver2" -membertype NoteProperty -Value "$($result.nameserver3)"
+        $Global | add-member -name "Nameserver3" -membertype NoteProperty -Value "$($result.nameserver3)"
+        $Global | add-member -name "Httpproxy" -membertype NoteProperty -Value "$($result.httpproxy)"
+        $Global | add-member -name "Netwait Enabled" -membertype NoteProperty -Value "$($result.netwait_enabled)"
+        $Global | add-member -name "Netwait IP" -membertype NoteProperty -Value "$($result.netwait_ip)"
+        $Global | add-member -name "Hosts" -membertype NoteProperty -Value "$($result.hosts)"
+        return $Global
+    }
+}
+
+function Get-FreeNasInterface
+{
+    [CmdletBinding()]
+    [Alias()]
+
+    Param
+    ()
+
+
+    Begin
+    {
+        $uri = "api/v2.0/interface"
+    }
+    Process
+    {
+
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+    }
+    End
+    {
+        $Global = new-Object -TypeName PSObject
+        $Global | add-member -name "Id" -membertype NoteProperty -Value "$($result.id)"
+        $Global | add-member -name "Name" -membertype NoteProperty -Value "$($result.name)"
+        $Global | add-member -name "Fake" -membertype NoteProperty -Value "$($result.fake)"
+        $Global | add-member -name "type" -membertype NoteProperty -Value "$($result.type)"
+        $Global | add-member -name "Aliases" -membertype NoteProperty -Value "$($result.aliases)"
+        $Global | add-member -name "Dhcp ipv4" -membertype NoteProperty -Value "$($result.ipv4_dhcp)"
+        $Global | add-member -name "Dhcp ipv6" -membertype NoteProperty -Value "$($result.ipv6_auto)"
+        $Global | add-member -name "Description" -membertype NoteProperty -Value "$($result.description)"
+        $Global | add-member -name "Options" -membertype NoteProperty -Value "$($result.options)"
+        $Global | add-member -name "Name parent" -membertype NoteProperty -Value "$($result.state.name)"
+        $Global | add-member -name "Origin Name" -membertype NoteProperty -Value "$($result.state.orig_name)"
+        $Global | add-member -name "Description parent" -membertype NoteProperty -Value "$($result.state.description)"
+        $Global | add-member -name "MTU" -membertype NoteProperty -Value "$($result.state.mtu)"
+        $Global | add-member -name "Cloned" -membertype NoteProperty -Value "$($result.state.cloned)"
+        $Global | add-member -name "Flags" -membertype NoteProperty -Value "$($result.state.flags)"
+        $Global | add-member -name "Nd6_flags" -membertype NoteProperty -Value "$($result.state.nd6_flags)"
+        $Global | add-member -name "Link state" -membertype NoteProperty -Value "$($result.state.link_state)"
+        $Global | add-member -name "Media type" -membertype NoteProperty -Value "$($result.state.media_type)"
+        $Global | add-member -name "Media subtype" -membertype NoteProperty -Value "$($result.state.media_subtype)"
+        $Global | add-member -name "Active media type" -membertype NoteProperty -Value "$($result.state.active_media_type)"
+        $Global | add-member -name "Active media subtype" -membertype NoteProperty -Value "$($result.state.active_media_subtype)"
+        $Global | add-member -name "Supported_media" -membertype NoteProperty -Value "$($result.state.supported_media)"
+        $Global | add-member -name "Media options" -membertype NoteProperty -Value "$($result.state.media_options)"
+        $Global | add-member -name "Mac Address" -membertype NoteProperty -Value "$($result.state.link_address)"
+
+
+        return $Global
+    }
+}
+
+
 ###########TEST#######################################################
-Connect-FreeNasServer -Server 192.168.0.20 -ApiVersion v2.0 -httpOnly
+Connect-FreeNasServer -Server 192.168.0.25 -ApiVersion v2.0 -httpOnly
 Get-FreeNasCertificate -Verbose
 Get-FreeNasDisk -Verbose
 Get-FreeNasDiskUnsed -Verbose
+Get-FreeNasGlobalConfig
+Get-FreeNasInterface
