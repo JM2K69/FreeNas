@@ -38,7 +38,8 @@
 
         $FreenasVolume = @()
 
-        $StartDisksNB..$($StartDisksNB + $NbDisks - 1) | Foreach-Object { $freenasvolume += "$DiskNamebase$_" }
+        $StartDisksNB..$($StartDisksNB + $NbDisks - 1) |
+        Foreach-Object -Process { $freenasvolume += "$DiskNamebase$_" }
 
         $Uri = "api/v1.0/storage/volume/"
 
