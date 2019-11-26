@@ -10,19 +10,21 @@ Level     : OK
 Message   : The volume tank (ZFS) status is HEALTHY
 Dismissed : false
 #>
-function Get-FreeNasSystemAlert {
+function Get-FreeNasSystemAlert
+{
     Param( )
 
     $Uri = "api/v1.0/system/alert/"
 
     $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
-    foreach ($Alert in $results) {
+    foreach ($Alert in $results)
+    {
         [PSCustomObject]@{
             Id        = ($Alert.id)
             Level     = ($Alert.level)
             Message   = ($Alert.message)
             Dismissed = ($Alert.dismissed)
-        } | fl
+        }
     }
 }

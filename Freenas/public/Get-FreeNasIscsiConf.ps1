@@ -26,6 +26,6 @@
 
         $IscsiConf.Add($temp) | Out-Null
 
-        return $IscsiConf | fl
+        return $IscsiConf
     }
 }

@@ -29,7 +29,7 @@
         $FreeNasConf.Add($temp) | Out-Null
 
 
-        return $FreeNasConf | fl
+        return $FreeNasConf
 
 
     }
