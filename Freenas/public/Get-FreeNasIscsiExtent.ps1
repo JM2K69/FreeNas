@@ -14,7 +14,7 @@
         $Uri = "api/v1.0/services/iscsi/extent/"
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
-        $Extent = New-Object System.Collections.ArrayList
+        $Extent = New-Object -TypeName System.Collections.ArrayList
 
         if ($null -eq $result.Count)
         {
@@ -39,7 +39,7 @@
                 }
             }
             Catch { throw }
-            $temp = New-Object System.Object
+            $temp = New-Object -TypeName System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value  "$($result.id)"
             $temp | Add-Member -MemberType NoteProperty -Name "Extent_Type" -Value "$($result.iscsi_target_extent_type)"
             $temp | Add-Member -MemberType NoteProperty -Name "Extent_Name" -Value  "$($result.iscsi_target_extent_name)"
@@ -76,7 +76,7 @@
                     }
                 }
                 Catch { throw }
-                $temp = New-Object System.Object
+                $temp = New-Object -TypeName System.Object
                 $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value  "$($result[$i].id)"
                 $temp | Add-Member -MemberType NoteProperty -Name "Extent_Type" -Value "$($result[$i].iscsi_target_extent_type)"
                 $temp | Add-Member -MemberType NoteProperty -Name "Extent_Name" -Value  "$($result[$i].iscsi_target_extent_name)"

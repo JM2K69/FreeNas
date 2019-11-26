@@ -60,12 +60,12 @@ function Get-FreeNasCertificate
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
-        $Certificate = New-Object System.Collections.ArrayList
+        $Certificate = New-Object -TypeName System.Collections.ArrayList
 
         if ($null -eq $result.count)
         {
 
-            $temp = New-Object System.Object
+            $temp = New-Object -TypeName System.Object
             $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result.cert_name)"
             $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
             $temp | Add-Member -MemberType NoteProperty -Name "CSR" -Value "$($result.cert_CSR)"
@@ -100,7 +100,7 @@ function Get-FreeNasCertificate
             for ($i = 0; $i -lt $result.Count; $i++)
             {
 
-                $temp = New-Object System.Object
+                $temp = New-Object -TypeName System.Object
                 $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result[$i].cert_name)"
                 $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
                 $temp | Add-Member -MemberType NoteProperty -Name "CSR" -Value "$($result[$i].cert_CSR)"
