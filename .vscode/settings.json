@@ -3,6 +3,8 @@
   "powershell.codeFormatting.openBraceOnSameLine": false,
   "powershell.codeFormatting.newLineAfterOpenBrace": true,
   "powershell.codeFormatting.preset": "Allman",
+  "editor.renderWhitespace": "all",
+  "files.trimTrailingWhitespace": true,
   "editor.formatOnSave": true,
   "editor.insertSpaces": true,
   "editor.tabSize": 4,
