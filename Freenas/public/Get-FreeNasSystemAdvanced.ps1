@@ -25,6 +25,6 @@ function Get-FreeNasSystemAdvanced
             Advanced_Serial_port    = ($Info.adv_serialport)
             Advanced_Serial_speed   = ($Info.adv_serialspeed)
 
-        } | fl
+        }
     }
 }
