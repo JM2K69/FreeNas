@@ -54,7 +54,7 @@ function Update-FreeNasInterface
     {
 
         $response = Invoke-FreeNasRestMethod -method Put -body $Obj -Uri $Uri
-        Write-Warning "You need to reconnect to the host $Ipv4/$NetMask"
+        Write-Warning -Message "You need to reconnect to the host $Ipv4/$NetMask"
 
     }
 

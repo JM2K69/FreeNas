@@ -18,12 +18,12 @@
         New-banner -Text "____________" -Online -FontColor Green
         New-banner -Text "Iscsi Summary" -Online
 
-        Write-Host "Your Freenas Server" -NoNewline
-        Write-Host " $script:SrvFreenas" -NoNewline -ForegroundColor Cyan
-        Write-Host " Iscsi Configuration : "
+        Write-Host -Object "Your Freenas Server" -NoNewline
+        Write-Host -Object " $script:SrvFreenas" -NoNewline -ForegroundColor Cyan
+        Write-Host -Object " Iscsi Configuration : "
         $Conf_Iscsi
 
-        Write-host "The Iscsi Portal : "
+        Write-Host -Object "The Iscsi Portal : "
         Get-FreenasIscsiPortal
 
         $TotalSize = ""
@@ -31,15 +31,15 @@
             [int]$Size = [Math]::Round($Extent_Iscsi[$i].Extent_Size , 2)
             [Int]$TotalSize = $TotalSize + $Size
         }
-        Write-host "The Server have"$($Extent_Iscsi).count"Extent(s) with a total size" -NoNewline
-        Write-Host " $TotalSize " -NoNewline -ForegroundColor Cyan
-        Write-Host "GB"
-        Write-host "The Iscsi Extent Type :"
+        Write-Host -Object "The Server have"$($Extent_Iscsi).count"Extent(s) with a total size" -NoNewline
+        Write-Host -Object " $TotalSize " -NoNewline -ForegroundColor Cyan
+        Write-Host -Object "GB"
+        Write-Host -Object "The Iscsi Extent Type :"
         $Extent_Iscsi | FT
-        Write-host "The Target Iscsi :"
+        Write-Host -Object "The Target Iscsi :"
 
         $Target_Iscsi | ft
-        Write-host "The Association Target with Extend :"
+        Write-Host -Object "The Association Target with Extend :"
 
         $Association | ft
     }

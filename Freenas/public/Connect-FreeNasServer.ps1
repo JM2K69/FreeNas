@@ -91,7 +91,7 @@ function Connect-FreeNasServer
         #If there is a password (and a user), create a credentials
         if ($Password)
         {
-            $Credentials = New-Object -TypeName System.Management.Automation.PSCredential($Username, $Password)
+            $Credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Username, $Password
         }
         #Not Credentials (and no password)
         if ($NULL -eq $Credentials)
