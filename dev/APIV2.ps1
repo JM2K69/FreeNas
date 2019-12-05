@@ -847,10 +847,248 @@ function Get-FreeNasIscsiPortal
     { }
 }
 
+function Get-FreeNasIscsiTarget
+{
+    Param
+    ( )
+
+
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/iscsi/target"
+
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+        $FreenasIscsiTarget = New-Object -TypeName System.Collections.ArrayList
+        for ($i = 0; $i -lt $result.Count; $i++)
+        {
+            $temp = New-Object -TypeName System.Object
+            $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Target alias" -Value "$($result[$i].alias)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Target name" -Value "$($result[$i].name)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Target mode" -Value "$($result[$i].mode)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Groups portal" -Value "$($result[$i].groups.portal)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Groups initiator" -Value "$($result[$i].groups.initiator)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Groups authentification" -Value "$($result[$i].groups.auth)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Groups authen-method" -Value "$($result[$i].groups.authmethod)"
+
+            $FreenasIscsiTarget.Add($temp) | Out-Null
+        }
+
+
+        return $FreenasIscsiTarget
+    }
+    End
+    { }
+}
+
+function Get-FreeNasIscsiAssociat2Extent
+{
+    [CmdletBinding()]
+    [Alias()]
+    [OutputType([int])]
+    Param
+    (
+        [ValidateSet("Id", "Name")]
+        [string]$Output = "Id"
+
+    )
+
+
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/iscsi/targetextent"
+
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+        switch ($Output)
+        {
+            'Id'
+            {
+                $FreenasIscsiAssociat2Extent = New-Object -TypeName System.Collections.ArrayList
+                if ($null -eq $result.Count)
+                {
+                    $temp = New-Object -TypeName System.Object
+                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Extent Id" -Value "$($result[$i].extent)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Lun Id" -Value "$($result[$i].lunid)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Target Id" -Value "$($result[$i].target)"
+                    $FreenasIscsiAssociat2Extent.Add($temp) | Out-Null
+                }
+
+                for ($i = 0; $i -lt $result.Count; $i++)
+                {
+                    $temp = New-Object -TypeName System.Object
+                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Extent Id" -Value "$($result[$i].extent)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Lun Id" -Value "$($result[$i].lunid)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Target Id" -Value "$($result[$i].target)"
+
+                    $FreenasIscsiAssociat2Extent.Add($temp) | Out-Null
+                }
+            }
+            'Name'
+            {
+                $FreenasIscsiAssociat2Extent = New-Object -TypeName System.Collections.ArrayList
+
+                if ($null -eq $result.Count)
+                {
+                    $value = $result.extent
+                    $value2 = $result.target
+                    $TargetName = Get-FreenasIscsiTarget
+                    $IscsiExtend = Get-FreenasIscsiExtent
+
+                    foreach ($item in $TargetName)
+                    {
+                        if ( $Item.Id -eq $value2 )
+                        {
+                            $TargetNameF = $item.'Target name'
+                        }
+
+                    }
+
+                    foreach ($item in $IscsiExtend)
+                    {
+                        if ( $Item.Id -eq $value )
+                        {
+                            $IscsiExtendF = $item.'Extent Name'
+                        }
+                    }
+                    $temp = New-Object -TypeName System.Object
+                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].Id)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi_Extent_Name" -Value $IscsiExtendF
+                    $temp | Add-Member -MemberType NoteProperty -Name "LUN Id" -Value "$($result[$i].lunid)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Target_Name" -Value $TargetNameF
+
+                    $FreenasIscsiAssociat2Extent.Add($temp) | Out-Null
+
+
+                }
+
+
+                for ($i = 0; $i -lt $result.Count; $i++)
+                {
+                    $value = $result[$i].extent
+                    $value2 = $result[$i].target
+                    $TargetName = Get-FreenasIscsiTarget
+                    $IscsiExtend = Get-FreenasIscsiExtent
+
+
+                    foreach ($item in $TargetName)
+                    {
+                        if ( $Item.Id -eq $value2 )
+                        {
+                            $TargetNameF = $item.'Target name'
+                        }
+
+                    }
+
+                    foreach ($item in $IscsiExtend)
+                    {
+                        if ( $Item.Id -eq $value )
+                        {
+                            $IscsiExtendF = $item.'Extent Name'
+                        }
+                    }
+
+
+                    $temp = New-Object -TypeName System.Object
+                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].Id)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi_Extent_Name" -Value $IscsiExtendF
+                    $temp | Add-Member -MemberType NoteProperty -Name "LUN Id" -Value "$($result[$i].lunid)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Target_Name" -Value $TargetNameF
+
+                    $FreenasIscsiAssociat2Extent.Add($temp) | Out-Null
+                }
+
+            }
+
+        }
+
+        return $FreenasIscsiAssociat2Extent
+    }
+    End
+    { }
+}
+
+function Get-FreeNasService
+{
+    Param
+    ( )
+
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/service"
+
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+    }
+    End
+    {
+        $result
+    }
+}
+
+function Get-FreeNasSetting
+{
+    [CmdletBinding()]
+    [Alias()]
+    Param
+    ()
+
+
+    Begin
+    { }
+    Process
+    {
+        $Uri = "api/v2.0/system/general"
+
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+    }
+    End
+    {
+        $Global = new-Object -TypeName PSObject
+
+        $Global | add-member -name "Id" -membertype NoteProperty -Value "$($result.id)"
+        $Global | add-member -name "Language" -membertype NoteProperty -Value "$($result.language)"
+        $Global | add-member -name "Keyboard map" -membertype NoteProperty -Value "$($result.kbdmap)"
+        $Global | add-member -name "Time zone" -membertype NoteProperty -Value "$($result.timezone)"
+        $Global | add-member -name "SysLog Level" -membertype NoteProperty -Value "$($result.sysloglevel)"
+        $Global | add-member -name "Syslog server" -membertype NoteProperty -Value "$($result.syslogserver)"
+        $Global | add-member -name "Crash reporting" -membertype NoteProperty -Value "$($result.crash_reporting )"
+        $Global | add-member -name "WizardShonw" -membertype NoteProperty -Value "$($result.wizardshown)"
+        $Global | add-member -name "Usage collection" -membertype NoteProperty -Value "$($result.usage_collection)"
+        $Global | add-member -name "Ui certificate" -membertype NoteProperty -Value "$($result.ui_certificate)"
+        $Global | add-member -name "Ui address" -membertype NoteProperty -Value "$($result.ui_address)"
+        $Global | add-member -name "Ui v6address" -membertype NoteProperty -Value "$($result.ui_v6address)"
+        $Global | add-member -name "Ui port" -membertype NoteProperty -Value "$($result.ui_port)"
+        $Global | add-member -name "Ui https port" -membertype NoteProperty -Value "$($result.ui_httpsport)"
+        $Global | add-member -name "Ui https redirect" -membertype NoteProperty -Value "$($result.ui_httpsredirect)"
+        $Global | add-member -name "Crash reporting is set" -membertype NoteProperty -Value "$($result.crash_reporting_is_set)"
+        $Global | add-member -name "usage collection is set" -membertype NoteProperty -Value "$($result.usage_collection_is_set)"
+
+        return $Global
+    }
+}
+
+
+
 
 
 ###########TEST#######################################################
-Connect-FreeNasServer -Server 192.168.0.27 - -httpOnly
+Connect-FreeNasServer -Server 192.168.0.27  -httpOnly
 Get-FreeNasCertificate -Verbose
 Get-FreeNasDisk -Verbose
 Get-FreeNasDiskUnsed -Verbose
@@ -860,3 +1098,7 @@ Get-FreeNasIscsiConf
 Get-FreeNasIscsiExtent
 Get-FreeNasIscsiInitiator
 Get-FreeNasIscsiPortal
+Get-FreeNasIscsiTarget
+Get-FreeNasIscsiAssociat2Extent -Output Name
+Get-FreeNasService
+Get-FreeNasSetting
