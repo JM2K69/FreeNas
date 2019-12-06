@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ﻿function Invoke-FreeNasRestMethod
 {
 
@@ -77,6 +78,9 @@
 }
 
 function Set-FreeNasCipherSSL
+=======
+﻿function Set-FreeNasCipherSSL
+>>>>>>> Stashed changes
 {
 
     # Hack for allowing TLS 1.1 and TLS 1.2 (by default it is only SSL3 and TLS (1.0))
@@ -283,6 +287,7 @@ function Connect-FreeNasServer
     }
 }
 
+<<<<<<< Updated upstream
 <#
       .SYNOPSIS
       This function return Certificate created on your FreeNas Server

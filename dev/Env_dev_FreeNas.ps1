@@ -3308,7 +3308,7 @@ function Update-FreeNasSystem
 }
 #######################################
 
-Connect-FreeNasServer 192.168.0.26 -httpOnly 
+Connect-FreeNasServer 192.168.0.26 -httpOnly
 
 <#
 .SYNOPSIS
