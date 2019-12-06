@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 ﻿function Invoke-FreeNasRestMethod
 {
 
@@ -78,9 +77,6 @@
 }
 
 function Set-FreeNasCipherSSL
-=======
-﻿function Set-FreeNasCipherSSL
->>>>>>> Stashed changes
 {
 
     # Hack for allowing TLS 1.1 and TLS 1.2 (by default it is only SSL3 and TLS (1.0))
@@ -287,7 +283,6 @@ function Connect-FreeNasServer
     }
 }
 
-<<<<<<< Updated upstream
 <#
       .SYNOPSIS
       This function return Certificate created on your FreeNas Server
@@ -1088,12 +1083,209 @@ function Get-FreeNasSetting
     }
 }
 
+function Get-FreeNasSystemAdvanced
+{
+    Param( )
 
+    $Uri = "api/v2.0/system/advanced"
+
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+    foreach ($Info in $results)
+    {
+        [PSCustomObject]@{
+            Id                      = ($Info.id)
+            'Legacy UI'             = ($Info.legacy_ui)
+            Consolemenu             = ($Info.consolemenu)
+            'Serial console'        = ($Info.serialconsole)
+            'Serial port'           = ($Info.serialport)
+            'Serial speed'          = ($Info.serialspeed)
+            'Power daemon'          = ($Info.powerdaemon)
+            'Swap on drive'         = ($Info.swapondrive)
+            'Console msg'           = ($Info.consolemsg)
+            'Trace back'            = ($Info.traceback)
+            'Advanced mode'         = ($Info.advancedmode)
+            'Autotune'              = ($Info.autotune)
+            'Debug kernel'          = ($Info.debugkernel)
+            'Upload crash'          = ($Info.uploadcrash)
+            'MOTD'                  = ($Info.motd)
+            'Anonstats'             = ($Info.anonstats)
+            'Boot scrub'            = ($Info.boot_scrub)
+            'FQDN syslog'           = ($Info.fqdn_syslog)
+            'Sed user'              = ($Info.sed_user)
+            'Sed password'          = ($Info.sed_passwd)
+
+        }
+    }
+}
+
+function Get-FreeNasSystemAlert {
+    Param( )
+
+    $Uri = "api/v2.0/alertservice"
+
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+    foreach ($Alert in $results) {
+        [PSCustomObject]@{
+            Id              = ($Alert.id)
+            Name            = ($Alert.name)
+            Type            = ($Alert.type)
+            Attributes      = ($Alert.attributes)
+            Level           = ($Alert.level)
+            Enabled         = ($Alert.enabled)
+            'Type title'    = ($Alert.type__title)
+        }
+    }
+}
+
+function Get-FreeNasSystemNTP
+{
+    [Alias()]
+    Param
+    ()
+
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/system/ntpserver"
+
+        $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+        foreach ($NTP in $results) {
+            [PSCustomObject]@{
+                Id                 = ($NTP.id)
+                Address            = ($NTP.address)
+                Burst              = ($NTP.burst)
+                iburst             = ($NTP.iburst)
+                prefer             = ($NTP.prefer)
+                Minpoll            = ($NTP.minpoll)
+                Maxpoll            = ($NTP.maxpoll)
+            }
+        }
+
+    }
+    End { }
+}
+
+function Get-FreeNasSystemUpdate {
+    Param( )
+
+    $Uri = "api/v2.0/update/get_trains"
+
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+    return $results.trains
+}
+function Get-FreeNasSystemVersion {
+    Param( )
+
+    $Uri = "api/v2.0/system/info"
+
+    $results = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+
+        [PSCustomObject]@{
+            Version                = ($results.version)
+            'Build time'           = ($results.buildtime)
+            'Physical Memory'      = ($results.physmem)
+            Model                  = ($results.model)
+            Cores                  = ($results.cores)
+            'Load Average'         = ($results.loadavg)
+            Uptime                 = ($results.uptime)
+            'Uptime seconds'       = ($results.uptime_seconds)
+            'System serial'        = ($results.system_serial)
+            'System product'       = ($results.system_product)
+            license                = ($results.license)
+            'boot time'            = ($results.boottime)
+            'Date time'            = ($results.datetime)
+            Timezone               = ($results.timezone)
+            'System manufacturer'  = ($results.system_manufacturer)
+
+        }
+
+}
+
+function Get-FreeNasVolume
+{
+    Param
+
+    ( )
+
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/pool/dataset"
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+        #for dev only
+        $result = $result | where {$_.type -eq "Volume"}
+    }
+    End
+    {
+        $FreenasVolume = New-Object -TypeName System.Collections.ArrayList
+
+        if ($null -eq $result.count)
+        {
+            $temp = New-Object -TypeName System.Object
+            $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result.name)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Children" -Value "$($result.children)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Type" -Value "$($result.type)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Deduplication" -Value "$($result.deduplication.value)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Sync" -Value "$($result.sync.value)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Compression" -Value "$($result.compression.value)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Compression ratio" -Value "$($result.compressratio.value)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Ref reservation" -Value "$($result.refreservation.value)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Readonly" -Value "$($result.readonly.value)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Volume size" -Value "$($result.volsize.value)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Volume block size" -Value "$($result.volblocksize.value)"
+            $FreenasVolume.Add($temp) | Out-Null
+
+        }
+        else
+        {
+            for ($i = 0; $i -lt $result.Count; $i++)
+            {
+                $temp = New-Object -TypeName System.Object
+                $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value "$($result[$i].name)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Children" -Value "$($result[$i].children)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Type" -Value "$($result[$i].type)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Deduplication" -Value "$($result[$i].deduplication.value)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Sync" -Value "$($result[$i].sync.value)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Compression" -Value "$($result[$i].compression.value)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Compression ratio" -Value "$($result[$i].compressratio.value)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Ref reservation" -Value "$($result[$i].refreservation.value)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Readonly" -Value "$($result[$i].readonly.value)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Volume size" -Value "$($result[$i].volsize.value)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Volume block size" -Value "$($result[$i].volblocksize.value)"
+                $FreenasVolume.Add($temp) | Out-Null
+            }
+
+        }
+
+
+        return $FreenasVolume
+
+
+
+    }
+}
+
+$Uri = "api/v2.0/pool"
+$Uri = "api/v2.0/pool/dataset" | where {$_.type -eq "Volume"}
+$result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
 
 
 ###########TEST#######################################################
-Connect-FreeNasServer -Server 192.168.0.27  -httpOnly
+Connect-FreeNasServer -Server 10.30.103.103  -httpOnly
 Get-FreeNasCertificate -Verbose
 Get-FreeNasDisk -Verbose
 Get-FreeNasDiskUnsed -Verbose
@@ -1107,3 +1299,8 @@ Get-FreeNasIscsiTarget
 Get-FreeNasIscsiAssociat2Extent -Output Name
 Get-FreeNasService
 Get-FreeNasSetting
+Get-FreeNasSystemAdvanced
+Get-FreeNasSystemAlert
+Get-FreeNasSystemNTP
+Get-FreeNasSystemVersion
+Get-FreeNasVolume
