@@ -722,6 +722,7 @@ function Get-FreeNasIscsiExtent
         {
             for ($i = 0; $i -lt $result.Count; $i++)
             {
+                $temp = New-Object -TypeName System.Object
                 $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value  "$($result[$i].id)"
                 $temp | Add-Member -MemberType NoteProperty -Name "Extent Type" -Value "$($result[$i].type)"
                 $temp | Add-Member -MemberType NoteProperty -Name "Extent Name" -Value  "$($result[$i].name)"
@@ -862,23 +863,39 @@ function Get-FreeNasIscsiTarget
         $Uri = "api/v2.0/iscsi/target"
 
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
-
         $FreenasIscsiTarget = New-Object -TypeName System.Collections.ArrayList
-        for ($i = 0; $i -lt $result.Count; $i++)
-        {
-            $temp = New-Object -TypeName System.Object
-            $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
-            $temp | Add-Member -MemberType NoteProperty -Name "Target alias" -Value "$($result[$i].alias)"
-            $temp | Add-Member -MemberType NoteProperty -Name "Target name" -Value "$($result[$i].name)"
-            $temp | Add-Member -MemberType NoteProperty -Name "Target mode" -Value "$($result[$i].mode)"
-            $temp | Add-Member -MemberType NoteProperty -Name "Groups portal" -Value "$($result[$i].groups.portal)"
-            $temp | Add-Member -MemberType NoteProperty -Name "Groups initiator" -Value "$($result[$i].groups.initiator)"
-            $temp | Add-Member -MemberType NoteProperty -Name "Groups authentification" -Value "$($result[$i].groups.auth)"
-            $temp | Add-Member -MemberType NoteProperty -Name "Groups authen-method" -Value "$($result[$i].groups.authmethod)"
 
+        if ($null -eq $result.Count)
+        {
+
+            $temp = New-Object -TypeName System.Object
+            $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Target alias" -Value "$($result.alias)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Target name" -Value "$($result.name)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Target mode" -Value "$($result.mode)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Groups portal" -Value "$($result.groups.portal)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Groups initiator" -Value "$($result.groups.initiator)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Groups authentification" -Value "$($result.groups.auth)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Groups authen-method" -Value "$($result.groups.authmethod)"
             $FreenasIscsiTarget.Add($temp) | Out-Null
         }
+        else
+        {
+            for ($i = 0; $i -lt $result.Count; $i++)
+            {
+                $temp = New-Object -TypeName System.Object
+                $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Target alias" -Value "$($result[$i].alias)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Target name" -Value "$($result[$i].name)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Target mode" -Value "$($result[$i].mode)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Groups portal" -Value "$($result[$i].groups.portal)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Groups initiator" -Value "$($result[$i].groups.initiator)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Groups authentification" -Value "$($result[$i].groups.auth)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Groups authen-method" -Value "$($result[$i].groups.authmethod)"
 
+                $FreenasIscsiTarget.Add($temp) | Out-Null
+            }
+        }
 
         return $FreenasIscsiTarget
     }
@@ -914,13 +931,13 @@ function Get-FreeNasIscsiAssociat2Extent
             'Id'
             {
                 $FreenasIscsiAssociat2Extent = New-Object -TypeName System.Collections.ArrayList
-                if ($null -eq $result.Count)
+                if ($null -eq $result.count)
                 {
                     $temp = New-Object -TypeName System.Object
-                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Extent Id" -Value "$($result[$i].extent)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Lun Id" -Value "$($result[$i].lunid)"
-                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Target Id" -Value "$($result[$i].target)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Extent Id" -Value "$($result.extent)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Lun Id" -Value "$($result.lunid)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Iscsi Target Id" -Value "$($result.target)"
                     $FreenasIscsiAssociat2Extent.Add($temp) | Out-Null
                 }
 
@@ -963,9 +980,9 @@ function Get-FreeNasIscsiAssociat2Extent
                         }
                     }
                     $temp = New-Object -TypeName System.Object
-                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].Id)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.Id)"
                     $temp | Add-Member -MemberType NoteProperty -Name "Iscsi_Extent_Name" -Value $IscsiExtendF
-                    $temp | Add-Member -MemberType NoteProperty -Name "LUN Id" -Value "$($result[$i].lunid)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "LUN Id" -Value "$($result.lunid)"
                     $temp | Add-Member -MemberType NoteProperty -Name "Target_Name" -Value $TargetNameF
 
                     $FreenasIscsiAssociat2Extent.Add($temp) | Out-Null
@@ -1215,9 +1232,14 @@ function Get-FreeNasSystemVersion
 
 function Get-FreeNasVolume
 {
+    [CmdletBinding()]
     Param
+    (
+        [Parameter (Mandatory = $true)]
+        [ValidateSet("VOLUME", "FILESYSTEM")]
+        $Type
 
-    ( )
+    )
 
     Begin
     {
@@ -1228,8 +1250,12 @@ function Get-FreeNasVolume
         $Uri = "api/v2.0/pool/dataset"
         $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
 
-        #for dev only
-        $result = $result | where { $_.type -eq "Volume" }
+        switch ($Type)
+        {
+            'VOLUME' { $result = $result | Where-Object { $_.type -eq "VOLUME" } }
+            'FILESYSTEM' { $result = $result | Where-Object { $_.type -eq "FILESYSTEM" } }
+            Default { }
+        }
     }
     End
     {
@@ -1333,7 +1359,7 @@ function Get-FreeNasPool
                 $temp | Add-Member -MemberType NoteProperty -Name "Status" -Value "$($result[$i].status)"
                 $temp | Add-Member -MemberType NoteProperty -Name "Healthy" -Value "$($result[$i].healthy)"
                 $temp | Add-Member -MemberType NoteProperty -Name "Is decrypted" -Value "$($result[$i].is_decrypted)"
-                    $FreenasVolume.Add($temp) | Out-Null
+                $FreenasVolume.Add($temp) | Out-Null
             }
 
         }
@@ -1346,7 +1372,8 @@ function Get-FreeNasPool
     }
 }
 
-function New-FreeNasZvol {
+function New-FreeNasZvol
+{
 
     [CmdletBinding()]
     [Alias()]
@@ -1368,7 +1395,7 @@ function New-FreeNasZvol {
         [String]$Type = "VOLUME",
 
         [Parameter (Mandatory = $true)]
-        [ValidateSet( "MiB", "GiB","TiB")]
+        [ValidateSet( "MiB", "GiB", "TiB")]
         [String]$Unit = "GiB",
 
 
@@ -1391,11 +1418,13 @@ function New-FreeNasZvol {
     )
 
 
-    Begin {
+    Begin
+    {
 
     }
 
-    Process {
+    Process
+    {
 
         $Uri = "api/v2.0/pool/dataset"
 
@@ -1403,35 +1432,44 @@ function New-FreeNasZvol {
         $Zvolc = new-Object -TypeName PSObject
 
 
-        if ( $PsBoundParameters.ContainsKey('ZvolName') ) {
+        if ( $PsBoundParameters.ContainsKey('ZvolName') )
+        {
             $Zvolc | add-member -name "name" -membertype NoteProperty -Value $ZvolName/$Name
         }
-        if ( $PsBoundParameters.ContainsKey('Type') ) {
+        if ( $PsBoundParameters.ContainsKey('Type') )
+        {
             $Zvolc | add-member -name "type" -membertype NoteProperty -Value $Type
         }
 
-        if ( $PsBoundParameters.ContainsKey('Volsize') -and $PsBoundParameters.ContainsKey('Unit') ) {
-                switch ($Unit) {
-                    'MiB' {  $size = ($Volsize *1024*1024) }
-                    'GiB' {  $size = ($Volsize *1024*1024*1024) }
-                    'TiB' {  $size = ($Volsize *1024*1024*1024*1024)}
-                    Default {}
-                }
+        if ( $PsBoundParameters.ContainsKey('Volsize') -and $PsBoundParameters.ContainsKey('Unit') )
+        {
+            switch ($Unit)
+            {
+                'MiB' { $size = ($Volsize * 1024 * 1024) }
+                'GiB' { $size = ($Volsize * 1024 * 1024 * 1024) }
+                'TiB' { $size = ($Volsize * 1024 * 1024 * 1024 * 1024) }
+                Default { }
+            }
             $Zvolc | add-member -name "volsize" -membertype NoteProperty -Value $Size
         }
-        if ( $PsBoundParameters.ContainsKey('Sparse') ) {
+        if ( $PsBoundParameters.ContainsKey('Sparse') )
+        {
             $Zvolc | add-member -name "sparse" -membertype NoteProperty -Value $Sparse
         }
-        if ( $PsBoundParameters.ContainsKey('Forcesize') ) {
+        if ( $PsBoundParameters.ContainsKey('Forcesize') )
+        {
             $Zvolc | add-member -name "force_size" -membertype NoteProperty -Value $Forcesize
         }
-        if ( $PsBoundParameters.ContainsKey('Compression') ) {
+        if ( $PsBoundParameters.ContainsKey('Compression') )
+        {
             $Zvolc | add-member -name "compression" -membertype NoteProperty -Value $Compression
         }
-        if ( $PsBoundParameters.ContainsKey('Comment') ) {
+        if ( $PsBoundParameters.ContainsKey('Comment') )
+        {
             $Zvolc | add-member -name "comments" -membertype NoteProperty -Value $Comment
         }
-        if ( $PsBoundParameters.ContainsKey('BlokSize') ) {
+        if ( $PsBoundParameters.ContainsKey('BlokSize') )
+        {
             $Zvolc | add-member -name "blocksize" -membertype NoteProperty -Value $BlokSize
         }
 
@@ -1439,7 +1477,8 @@ function New-FreeNasZvol {
 
     }
 
-    End {
+    End
+    {
     }
 }
 
@@ -1453,22 +1492,657 @@ function New-FreeNasPool
     (
 
         [Parameter (Mandatory = $true)]
-        [string]$VolumeName,
-
+        [string]$PoolName,
         [Parameter (Mandatory = $true)]
-        [ValidateSet("stripe", "mirror", "raidz", "raidz2", "raidz3")]
-        [String]$Vdevtype,
-
+        [Bool]$Encryption,
+        [Parameter (Mandatory = $true)]
+        [ValidateSet("ON", "VERIFY", "OFF")]
+        $Deduplication,
+        [Parameter (Mandatory = $true)]
+        [ValidateSet("Data", "DataCache", "DataCacheLog", "DataCacheLogSpare", "DataCacheSpare", "DataLogSpare")]
+        [String]$PoolDesign,
+        [Parameter (Mandatory = $true)]
+        [ValidateSet("STRIPE", "MIRROR", "RAIDZ1", "RAIDZ2", "RAIDZ3")]
+        [String]$DataVdevType,
         [Parameter (Mandatory = $False)]
+        [ValidateSet("STRIPE", "MIRROR", "RAIDZ1", "RAIDZ2", "RAIDZ3")]
+        [String]$CacheVdevType,
+        [Parameter (Mandatory = $False)]
+        [ValidateSet("STRIPE", "MIRROR", "RAIDZ1", "RAIDZ2", "RAIDZ3")]
+        [String]$LogVdevType,
+        [Parameter (Mandatory = $false)]
+        [ValidateSet("yes")]
+        $force,
+        [Parameter (Mandatory = $false)]
         [String]$DiskNamebase = "da",
-
-
         [Parameter (Mandatory = $true)]
-        [Int]$NbDisks,
+        [Int]$NbDataDisks,
+        [Parameter (Mandatory = $false)]
+        [Int]$NbCacheDisks,
+        [Parameter (Mandatory = $false)]
+        [Int]$NbLogDisks,
+        [Parameter (Mandatory = $false)]
+        [Int]$NbSpareDisks,
+        [Parameter (Mandatory = $false)]
+        [Int]$StartDataDisksNB = 1,
+        [Parameter (Mandatory = $false)]
+        [Int]$StartCacheDisksNB = 1,
+        [Parameter (Mandatory = $false)]
+        [Int]$StartLogDisksNB = 1,
+        [Parameter (Mandatory = $false)]
+        [Int]$StartSpareDisksNB = 1
+    )
+    Begin
+    {
+        $Uri = "api/v2.0/pool"
+    }
+    Process
+    {
+        $FreenasDataVolume = @()
+        $StartDataDisksNB..$($StartDataDisksNB + $NbDataDisks - 1) | Foreach-Object { $FreenasDataVolume += "$DiskNamebase$_" }
+
+        switch ($PoolDesign)
+        {
+            'Data'
+            {
+                $Obj = [Ordered]@{
+                    name          = $PoolName
+                    encryption    = $Encryption
+                    deduplication = $Deduplication
+                    topology      = [Ordered]@{
+                        data = @(@{
+                                type  = $DataVdevType
+                                disks = $FreenasDataVolume
+                            })
+                    }
+                }
+
+            }
+            'DataCache'
+            {
+                $FreenasCacheVolume = @()
+                $StartCacheDisksNB..$($StartCacheDisksNB + $NbCacheDisks - 1) | Foreach-Object { $FreenasCacheVolume += "$DiskNamebase$_" }
+
+
+                $Obj = [Ordered]@{
+                    name          = $PoolName
+                    encryption    = $Encryption
+                    deduplication = $Deduplication
+                    topology      = [Ordered]@{
+                        data  = @(@{
+                                type  = $DataVdevType
+                                disks = $FreenasDataVolume
+                            })
+                        cache = @(@{
+                                type  = $CacheVdevType
+                                disks = @( $FreenasCacheVolume)
+                            })
+                    }
+                }
+
+            }
+            'DataCacheLog'
+            {
+                $FreenasCacheVolume = @()
+                $StartCacheDisksNB..$($StartCacheDisksNB + $NbCacheDisks - 1) | Foreach-Object { $FreenasCacheVolume += "$DiskNamebase$_" }
+
+                $FreenasLogVolume = @()
+                $StartLogDisksNB..$($StartLogDisksNB + $NbLogDisks - 1) | Foreach-Object { $FreenasLogVolume += "$DiskNamebase$_" }
+
+                $Obj = [Ordered]@{
+                    name          = $PoolName
+                    encryption    = $Encryption
+                    deduplication = $Deduplication
+                    topology      = [Ordered]@{
+                        data  = @(@{
+                                type  = $DataVdevType
+                                disks = $FreenasDataVolume
+                            })
+                        cache = @(@{
+                                type  = $CacheVdevType
+                                disks = @( $FreenasCacheVolume)
+                            })
+                        log   = @(@{
+                                type  = $LogVdevType
+                                disks = @( $FreenasLogVolume)
+                            })
+                    }
+                }
+
+            }
+            'DataCacheLogSpare'
+            {
+                $FreenasCacheVolume = @()
+                $StartCacheDisksNB..$($StartCacheDisksNB + $NbCacheDisks - 1) | Foreach-Object { $FreenasCacheVolume += "$DiskNamebase$_" }
+
+                $FreenasLogVolume = @()
+                $StartLogDisksNB..$($StartLogDisksNB + $NbLogDisks - 1) | Foreach-Object { $FreenasLogVolume += "$DiskNamebase$_" }
+
+                $FreenasSpareVolume = @()
+                $StartSpareDisksNB..$($StartSpareDisksNB + $NbSpareDisks - 1) | Foreach-Object { $FreenasSpareVolume += "$DiskNamebase$_" }
+
+                $Obj = [Ordered]@{
+                    name          = $PoolName
+                    encryption    = $Encryption
+                    deduplication = $Deduplication
+                    topology      = [Ordered]@{
+                        data   = @(@{
+                                type  = $DataVdevType
+                                disks = $FreenasDataVolume
+                            })
+                        cache  = @(@{
+                                type  = $CacheVdevType
+                                disks = @( $FreenasCacheVolume)
+                            })
+                        log    = @(@{
+                                type  = $LogVdevType
+                                disks = @( $FreenasLogVolume)
+                            })
+                        spares = @($FreenasSpareVolume)
+                    }
+                }
+
+            }
+            'DataCacheSpare'
+            {
+
+                $FreenasCacheVolume = @()
+                $StartCacheDisksNB..$($StartCacheDisksNB + $NbCacheDisks - 1) | Foreach-Object { $FreenasCacheVolume += "$DiskNamebase$_" }
+
+                $FreenasSpareVolume = @()
+                $StartSpareDisksNB..$($StartSpareDisksNB + $NbSpareDisks - 1) | Foreach-Object { $FreenasSpareVolume += "$DiskNamebase$_" }
+
+                $Obj = [Ordered]@{
+                    name          = $PoolName
+                    encryption    = $Encryption
+                    deduplication = $Deduplication
+                    topology      = [Ordered]@{
+                        data   = @(@{
+                                type  = $DataVdevType
+                                disks = $FreenasDataVolume
+                            })
+                        cache  = @(@{
+                                type  = $CacheVdevType
+                                disks = @( $FreenasCacheVolume)
+                            })
+                        spares = @($FreenasSpareVolume)
+                    }
+                }
+
+
+            }
+            'DataLogSpare'
+            {
+
+                $FreenasLogVolume = @()
+                $StartLogDisksNB..$($StartLogDisksNB + $NbLogDisks - 1) | Foreach-Object { $FreenasLogVolume += "$DiskNamebase$_" }
+
+                $FreenasSpareVolume = @()
+                $StartSpareDisksNB..$($StartSpareDisksNB + $NbSpareDisks - 1) | Foreach-Object { $FreenasSpareVolume += "$DiskNamebase$_" }
+
+                $Obj = [Ordered]@{
+                    name          = $PoolName
+                    encryption    = $Encryption
+                    deduplication = $Deduplication
+                    topology      = [Ordered]@{
+                        data   = @(@{
+                                type  = $DataVdevType
+                                disks = $FreenasDataVolume
+                            })
+                        log    = @(@{
+                                type  = $LogVdevType
+                                disks = @( $FreenasLogVolume)
+                            })
+                        spares = @($FreenasSpareVolume)
+                    }
+                }
+
+
+            }
+
+        }
+    }
+
+    End
+    {
+        $response = Invoke-FreeNasRestMethod -Method Post -body $Obj -Uri $uri
+        Write-host "PROGESS : " -ForegroundColor Green -NoNewline
+        do
+        {
+            $Value = $((Get-FreeNasJob -Id $response).Progress).Substring(10, 2)
+            $Test = $Value -match ".*\d+.*"
+            if ($Test -eq "True")
+            {
+                Write-host "$value%" -ForegroundColor Yellow -NoNewline
+                Write-Host "..." -NoNewline
+            }
+            else
+            { }
+        }
+        While ((Get-FreeNasJob -Id $response).State -eq "RUNNING")
+
+        if ((Get-FreeNasJob -Id $response).State -eq "SUCCESS" )
+        {
+            Write-host " "
+            Write-Output "The creation for the  $PoolName is finished "
+            return $Obj
+        }
+        else
+        {
+            Write-Warning -Message "The opperation finish with some error"
+            Get-FreeNasJob -Id $response
+        }
+
+    }
+}
+function Get-FreeNasJob
+{
+    [CmdletBinding()]
+
+    Param(
+        [Parameter (Mandatory = $false)]
+        [Int]$Id,
+        [ValidateSet("First", "Last", "FiveLast")]
+        $Property
+    )
+
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/core/get_jobs"
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+    }
+    End
+    {
+        $FreeNasJobs = New-Object -TypeName System.Collections.ArrayList
+
+        if ( $PsBoundParameters.ContainsKey('Id'))
+        {
+            $result = $result | Where-Object { $_.id -eq "$id" }
+            $temp = New-Object -TypeName System.Object
+            $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Method" -Value "$($result.method)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Arguments" -Value "$($result.arguments)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Logs path" -Value "$($result.logs_path)"
+            $temp | Add-Member -MemberType NoteProperty -Name "logs excerpt" -Value "$($result.logs_excerpt)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Progress" -Value "$($result.progress)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Result" -Value "$($result.result)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Error" -Value "$($result.error)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Exception" -Value "$($result.exception)"
+            $temp | Add-Member -MemberType NoteProperty -Name "Exc info" -Value "$($result.exc_info)"
+            $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result.state)"
+            $FreeNasJobs.Add($temp) | Out-Null
+
+        }
+        elseif ( $PsBoundParameters.ContainsKey('Property'))
+        {
+            switch ($Property)
+            {
+
+                'First'
+                {
+                    $result = $result | Select-Object -First 1
+                    $temp = New-Object -TypeName System.Object
+                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Method" -Value "$($result.method)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Arguments" -Value "$($result.arguments)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Logs path" -Value "$($result.logs_path)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "logs excerpt" -Value "$($result.logs_excerpt)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Progress" -Value "$($result.progress)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Result" -Value "$($result.result)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Error" -Value "$($result.error)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Exception" -Value "$($result.exception)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Exc info" -Value "$($result.exc_info)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result.state)"
+                    $FreeNasJobs.Add($temp) | Out-Null
+                }
+                'Last'
+                {
+                    $result = $result | Select-Object -Last 1
+                    $temp = New-Object -TypeName System.Object
+                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Method" -Value "$($result.method)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Arguments" -Value "$($result.arguments)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Logs path" -Value "$($result.logs_path)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "logs excerpt" -Value "$($result.logs_excerpt)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Progress" -Value "$($result.progress)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Result" -Value "$($result.result)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Error" -Value "$($result.error)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Exception" -Value "$($result.exception)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Exc info" -Value "$($result.exc_info)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result.state)"
+                    $FreeNasJobs.Add($temp) | Out-Null
+
+                }
+                'fiveLast'
+                {
+                    $result = $result | Select-Object -Last 5
+                    for ($i = 0; $i -lt $result.Count; $i++)
+                    {
+                        $temp = New-Object -TypeName System.Object
+                        $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "Method" -Value "$($result[$i].method)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "Arguments" -Value "$($result[$i].arguments)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "Logs path" -Value "$($result[$i].logs_path)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "logs excerpt" -Value "$($result[$i].logs_excerpt)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "Progress" -Value "$($result[$i].progress)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "Result" -Value "$($result[$i].result)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "Error" -Value "$($result[$i].error)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "Exception" -Value "$($result[$i].exception)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "Exc info" -Value "$($result[$i].exc_info)"
+                        $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result[$i].state)"
+                        $FreeNasJobs.Add($temp) | Out-Null
+                    }
+                }
+            }
+        }
+        else
+        {
+
+            if ($null -eq $result.count)
+            {
+                $temp = New-Object -TypeName System.Object
+                $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result.id)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Method" -Value "$($result.method)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Arguments" -Value "$($result.arguments)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Logs path" -Value "$($result.logs_path)"
+                $temp | Add-Member -MemberType NoteProperty -Name "logs excerpt" -Value "$($result.logs_excerpt)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Progress" -Value "$($result.progress)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Result" -Value "$($result.result)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Error" -Value "$($result.error)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Exception" -Value "$($result.exception)"
+                $temp | Add-Member -MemberType NoteProperty -Name "Exc info" -Value "$($result.exc_info)"
+                $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result.state)"
+                $FreeNasJobs.Add($temp) | Out-Null
+
+            }
+            else
+            {
+                for ($i = 0; $i -lt $result.Count; $i++)
+                {
+                    $temp = New-Object -TypeName System.Object
+                    $temp | Add-Member -MemberType NoteProperty -Name "Id" -Value "$($result[$i].id)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Method" -Value "$($result[$i].method)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Arguments" -Value "$($result[$i].arguments)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Logs path" -Value "$($result[$i].logs_path)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "logs excerpt" -Value "$($result[$i].logs_excerpt)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Progress" -Value "$($result[$i].progress)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Result" -Value "$($result[$i].result)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Error" -Value "$($result[$i].error)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Exception" -Value "$($result[$i].exception)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "Exc info" -Value "$($result[$i].exc_info)"
+                    $temp | Add-Member -MemberType NoteProperty -Name "State" -Value "$($result[$i].state)"
+                    $FreeNasJobs.Add($temp) | Out-Null
+                }
+
+            }
+
+        }
+
+        return $FreeNasJobs
+    }
+}
+
+function Get-FreeNasUpdateTrain
+{
+    Param
+    ( )
+
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/update/get_trains"
+
+        $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+
+        $results = $result | foreach-object { $_.trains.psobject.properties }
+    }
+    End
+    {
+        $Available = New-Object -TypeName System.Collections.ArrayList
+
+        $temp = New-Object -TypeName PSObject
+        $temp | Add-Member -MemberType NoteProperty -Name "Current profile" -Value $result.current
+        $temp | Add-Member -MemberType NoteProperty -Name "Current selected" -Value $result.selected
+        for ($i = 0; $i -lt $results.Count; $i++)
+        {
+
+            $temp | Add-Member -MemberType NoteProperty -Name "Profile Available $i" -Value $results[$i].Name
+            $temp | Add-Member -MemberType NoteProperty -Name "Profile $i description" -Value $results[$i].Value.description
+
+        }
+        $Available.Add($temp) | Out-Null
+
+        return $Available
+    }
+}
+
+function Set-FreeNasUpdateTrain
+{
+    [CmdletBinding()]
+    Param
+    (
+        [Parameter (Mandatory = $true )]
+        [ValidateSet("FreeNAS-11.3-STABLE", "FreeNAS-11.3-RC", "reeNAS-11.2-STABLE", "FreeNAS-11-STABLE", "FreeNAS-11-Nightlies-SDK", "FreeNAS-11-Nightlies", "FreeNAS-9.10-STABLE")]
+        [String]$Train
+    )
+
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/update/set_train"
+        $Obj = $Train
+        $obj = $Obj | ConvertTo-Json -Depth 5
+        $obj
+        #$result = Invoke-FreeNasRestMethod -Method Post -body $Obj -Uri $uri
+
+    }
+    End
+    {
+    }
+}
+
+function New-FreeNasIscsiPortal
+{
+    [CmdletBinding()]
+    [Alias()]
+    [OutputType([int])]
+    Param
+    (
+        [Parameter (Mandatory = $true)]
+        $IpPortal,
 
         [Parameter (Mandatory = $false)]
-        [Int]$StartDisksNB = 1
+        [string]$Port = 3260 ,
 
+        [Parameter (Mandatory = $false)]
+        [string]$Comment
+    )
+
+
+
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/iscsi/portal"
+
+        $Obj = [Ordered]@{
+            listen  = @(@{
+                    ip   = $IpPortal
+                    port = $Port
+                })
+            comment = $Comment
+        }
+
+
+        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
+
+    }
+    End
+    { }
+}
+
+function New-FreeNasIscsiInitiator
+{
+    [CmdletBinding()]
+    [Alias()]
+    [OutputType([int])]
+    Param
+    (
+
+        [Parameter (Mandatory = $False)]
+        [ValidateSet("ALL")]
+        [string]$AuthInitiators = "ALL",
+
+        [Parameter (Mandatory = $False)]
+        [ValidateSet("ALL")]
+        [String]$AuthNetwork = "ALL",
+        [Parameter (Mandatory = $False)]
+        [String]$comment
+
+    )
+
+
+    Begin
+    {
+        if ( $AuthInitiators -eq "ALL")
+        {
+            $AuthInitiator = ""
+        }
+        else { $AuthInitiators = $AuthInitiator }
+
+        if ( $AuthNetwork -eq "ALL")
+        {
+            $AuthNetworks = ""
+        }
+        else { $AuthNetwork = $AuthNetworks }
+    }
+    Process
+    {
+        $Uri = "api/v2.0/iscsi/initiator"
+
+        $Obj = [Ordered]@{
+
+            initiators   = @($AuthInitiator)
+            auth_network = @($AuthNetworks)
+            comment      = $comment
+        }
+
+
+        $result = Invoke-FreeNasRestMethod -Method Post -body $Obj -Uri $uri
+
+
+    }
+    End
+    { }
+}
+
+function New-FreeNasIscsiTarget
+{
+    [CmdletBinding()]
+    [Alias()]
+    [OutputType([int])]
+    Param
+    (
+        [Parameter (Mandatory = $true)]
+        [string]$TargetName,
+
+        [Parameter (Mandatory = $true)]
+        [string]$TargetAlias,
+
+        [Parameter (Mandatory = $true)]
+        [Int]$GroupsPortalId,
+
+        [Parameter (Mandatory = $true)]
+        [Int]$GroupsInitiatorId,
+
+        [Parameter (Mandatory = $false)]
+        [int]$Auth,
+
+        [Parameter (Mandatory = $false)]
+        [string]$Authmethod = "NONE",
+
+        [Parameter (Mandatory = $false)]
+        [string]$TargetMode = "ISCSI"
+
+
+    )
+    Begin
+    {
+
+    }
+    Process
+    {
+        $Uri = "api/v2.0/iscsi/target"
+
+        $Obj = new-Object -TypeName PSObject
+
+        $Obj = [Ordered]@{
+
+            name   = $TargetName.ToLower()
+            alias  = $TargetAlias.ToLower()
+            mode   = $TargetMode.ToUpper()
+            groups = @([Ordered]@{
+                    portal     = $GroupsPortalId
+                    initiator  = $GroupsInitiatorId
+                    auth       = $Auth
+                    authmethod = $Authmethod
+                })
+        }
+
+        $response = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
+
+
+    }
+    End
+    { }
+}
+
+function New-FreeNasIscsiExtent
+{
+
+    [CmdletBinding()]
+    [Alias()]
+    [OutputType([int])]
+    Param
+    (
+
+        [Parameter (Mandatory = $true)]
+        [string]$ExtentName,
+
+        [Parameter (Mandatory = $true)]
+        [ValidateSet("DISK", "Zvol", "File")]
+        [String]$ExtenType,
+
+        [Parameter (Mandatory = $false)]
+        [String]$FreeNasPoolName,
+
+        [Parameter (Mandatory = $false)]
+        [String]$FreeNasZvolName,
+
+
+        [Parameter (Mandatory = $true)]
+        [ValidateSet("Unknown", "SSD", "5400", "7200", "10000", "15000")]
+        $ExtentSpeed,
+
+        [Parameter (Mandatory = $false)]
+        [string]$ExtendComment,
+
+        [Parameter (Mandatory = $false)]
+        [String]$ExtenDiskPath
 
     )
 
@@ -1480,49 +2154,87 @@ function New-FreeNasPool
 
     Process
     {
+        $Uri = "api/v2.0/iscsi/extent"
 
-        $FreenasVolume = @()
+        switch ($ExtenType)
+        {
+            Zvol
+            {
+                $ExtenType = "DISK"
+                $ExtenDiskPath = 'zvol/' + $FreeNasPoolName + '/' + $FreeNasZvolName
+                $Obj = [Ordered]@{
+                    name         = $ExtentName
+                    type         = $ExtenType
+                    disk         = $ExtenDiskPath
+                    comment      = $ExtendComment
+                    insecure_tpc = $true
+                    xen          = $true
+                    rpm          = $ExtentSpeed
+                    ro           = $true
+                    enabled      = $true
+                }
 
-        $StartDisksNB..$($StartDisksNB + $NbDisks - 1) | Foreach-Object { $freenasvolume += "$DiskNamebase$_" }
+            }
+            DISK
+            {
+                $Obj = [Ordered]@{
+                    name         = $ExtentName
+                    type         = $ExtenType
+                    disk         = $ExtenDiskPath
+                    comment      = $ExtendComment
+                    insecure_tpc = $true
+                    xen          = $true
+                    rpm          = $ExtentSpeed
+                    ro           = $true
+                    enabled      = $true
+                }
+            }
+            File { Write-Warning "Not implemented yet..." }
+            Default { }
+        }
+        Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
-        $Uri = "api/v2.0/pool"
+    }
+    End
+    { }
 
-        $VolumeName = "toto"
-        $encryption = $true
-        $deduplication = "null"
-        $FreenasVolume = ("da1","da2","da3")
-        $Vdevtype1 = "RAIDZ1"
-        $Vdevtype2 = "STRIPE"
-        $Vdevtype3 = "RAIDZ1"
-        $FreenasVolume2 = "da4"
-        $FreenasVolume2s = "da5"
+}
 
-        $FreenasVolumes = "da6"
+function New-FreeNasIscsiAssociat2Extent
+{
+
+    [CmdletBinding()]
+    [Alias()]
+    [OutputType([int])]
+    Param
+    (
+
+        [Parameter (Mandatory = $true)]
+        [INT]$TargetId,
+
+        [Parameter (Mandatory = $true)]
+        [INT]$ExtentId
+
+    )
+
+
+    Begin
+    {
+
+    }
+
+    Process
+    {
+        $Uri = "api/v2.0/iscsi/targetextent"
+
         $Obj = [Ordered]@{
-                 name = $VolumeName
-                 encryption = $encryption
-                 deduplication = $deduplication
-                 topology = [Ordered]@{
-                 data      = @(@{
-                         type     = $Vdevtype1
-                         disks    = $FreenasVolume
-                     })
-                  cache      = @(@{
-                         type     = $Vdevtype2
-                         disks    =@( $FreenasVolume2)
-                     })
-                  log      = @(@{
-                         type     = $Vdevtype3
-                         disks    =@( $FreenasVolume2s)
-                     })
-                 spares     =@( $FreenasVolumes)
-             }
+            target = $TargetId
+            extent = $ExtentId
+            lunid  = 0
 
-             }
+        }
 
-             $obj | ConvertTo-Json -Depth 5
-
-        $response = Invoke-FreeNasRestMethod -Method Post -body $Obj -Uri $uri
+        $result = Invoke-FreeNasRestMethod -method Post -body $Obj -Uri $Uri
 
     }
 
@@ -1530,14 +2242,156 @@ function New-FreeNasPool
     { }
 }
 
+
+function Get-FreeNasAlertsList
+{
+
+    [CmdletBinding()]
+    [Alias()]
+    [OutputType([int])]
+    Param
+    ( )
+
+
+    Begin
+    {
+
+    }
+
+    Process
+    {
+        $Uri = "api/v2.0/alert/list"
+
+        $result = Invoke-FreeNasRestMethod -method GET -Uri $Uri
+        $result
+    }
+
+    End
+    { }
+}
+
+function Get-FreeNasPlugin
+{
+
+    [CmdletBinding()]
+    [Alias()]
+    Param
+    ( )
+
+
+    Begin
+    {
+
+    }
+
+    Process
+    {
+        $Uri = "api/v2.0/plugin/official_repositories"
+
+        $result = Invoke-FreeNasRestMethod -method GET -Uri $Uri
+
+        foreach ($item in $result.IXSYSTEMS)
+        {
+            $IXSYSTEMS = New-Object -TypeName PSObject
+            $IXSYSTEMS | Add-Member -MemberType NoteProperty -Name "Name" -Value $item.name
+            $IXSYSTEMS | Add-Member -MemberType NoteProperty -Name "Git repository" -Value $item.git_repository
+        }
+
+        foreach ($item in $result.COMMUNITY)
+        {
+            $COMMUNITY = New-Object -TypeName PSObject
+            $COMMUNITY | Add-Member -MemberType NoteProperty -Name "Name" -Value $item.name
+            $COMMUNITY | Add-Member -MemberType NoteProperty -Name "Git repository" -Value $item.git_repository
+        }
+
+    }
+
+    End
+    {
+        return $IXSYSTEMS, $COMMUNITY
+    }
+}
+
+function Remove-FreeNasIscsiExtent
+{
+    [CmdletBinding(SupportsShouldProcess)]
+    [Alias()]
+    Param
+    (
+        [Parameter (Mandatory = $true)]
+        [Int]$Id
+    )
+
+
+    Begin
+    {
+
+    }
+    Process
+    {
+
+        $Uri = "api/v2.0/iscsi/extent/id/$Id"
+
+        if ($PSCmdlet.ShouldProcess("will be remove" , "The Association to Exent with the id $Id"))
+        {
+            $response = Invoke-FreeNasRestMethod -method Delete -body $post -Uri $Uri
+        }
+
+    }
+    End
+    {
+
+    }
+}
+
+function Remove-FreeNasIscsiAssociat2Extent
+{
+    [CmdletBinding(SupportsShouldProcess)]
+    [Alias()]
+    Param
+    (
+        [Parameter (Mandatory = $true)]
+        [Int]$Id
+    )
+
+
+    Begin
+    {
+
+    }
+    Process
+    {
+
+        $Uri = "api/v2.0/iscsi/targetextent/id/$Id"
+
+        if ($PSCmdlet.ShouldProcess("will be remove" , "The Association to Exent with the id $Id"))
+        {
+            $response = Invoke-FreeNasRestMethod -method Delete -body $post -Uri $Uri
+        }
+
+    }
+    End
+    {
+
+    }
+}
+
+
+
+$Uri = "api/v2.0/truenas/get_eula"
+$Uri = "api/v2.0/iscsi/portal/listen_ip_choices"
+$Uri = "api/v2.0/reporting/graphs"
+$Uri = "api/v2.0/reporting"
 $Uri = "api/v2.0/plugin/official_repositories"
 $Uri = "api/v2.0/pool/dataset" | where { $_.type -eq "Volume" }
 $result = Invoke-FreeNasRestMethod -Uri $Uri -Method Get
+$result = Invoke-FreeNasRestMethod -Method Post -body $Obj -Uri $uri
+
 
 
 
 ###########TEST#######################################################
-Connect-FreeNasServer -Server 192.168.0.20  -httpOnly
+Connect-FreeNasServer -Server 192.168.0.24  -httpOnly
 Get-FreeNasCertificate -Verbose
 Get-FreeNasDisk -Verbose
 Get-FreeNasDiskUnsed -Verbose
@@ -1557,4 +2411,14 @@ Get-FreeNasSystemNTP
 Get-FreeNasSystemVersion
 Get-FreeNasVolume
 Get-FreeNasPool
-New-FreeNasZvol -Name test888 -ZvolName Data -Type VOLUME -Volsize 1 -Unit GiB -Sparse $true -Comment "demo" -Compression LZ4
+New-FreeNasZvol -Name Zvol1 -ZvolName Data -Type VOLUME -Volsize 1 -Unit GiB -Sparse $true -Comment "demo" -Compression LZ4
+New-FreeNasPool -PoolName Data -Encryption $false -Deduplication OFF -PoolDesign DataCacheLog -DataVdevType MIRROR -NbDataDisks 4 -StartDataDisksNB 4 -CacheVdevType STRIPE  -StartCacheDisksNB 7 -StartLogDisksNB 10 -NbLogDisks 1 -LogVdevType STRIPE
+Get-FreeNasUpdateProfile
+New-FreeNasIscsiTarget -TargetName LUN4 -TargetAlias lun4 -GroupsPortalId 1 -GroupsInitiatorId 1
+New-FreeNasIscsiExtent -ExtentName test -ExtenType Zvol -ExtentSpeed SSD -ExtendComment "essai" -FreeNasPoolName Data -FreeNasZvolName Zvol1
+New-FreeNasIscsiExtent -ExtentName test1 -ExtenType DISK -ExtentSpeed SSD -ExtendComment "essa1" -ExtenDiskPath da6
+Get-FreeNasAlertsList
+Get-FreeNasPlugin
+Get-FreeNasUpdateTrain
+
+
